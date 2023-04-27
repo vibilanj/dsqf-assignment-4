@@ -1,8 +1,15 @@
 # Assignment 4 - Alan, Vibilan, Jerri, Nahian
 
 ## TODO
-- [ ] Update `requirements.txt`
-- [ ] Fix linting, install autoformatter
+- [x] Fix linting spaces, install autoformatter
+- [x] Cleanup old requirements
+- [ ] Change InputData to handle new arguments
+- [ ] Change RunBacktest to use PyPortfolioOpt
+- [ ] Change BacktestStats to produces new statistics
+- [ ] Update requirements
+- [ ] Testing
+- [ ] Documentation
+- [ ] Linting
 
 ## Setting up virtual environment (recommended)
 
