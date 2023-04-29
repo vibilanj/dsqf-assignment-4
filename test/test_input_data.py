@@ -222,6 +222,6 @@ class TestInputData(unittest.TestCase):
         Tests the get_plot_weights method with valid input.
         """
         input_data = InputData(**self.default_args)
-        self.assertEqual(input_data.get_plot_weights(), 'True')
+        self.assertEqual(input_data.get_plot_weights(), "True")
         input_data2 = InputData(**{**self.default_args, "plot_weights": False})
         self.assertEqual(input_data2.get_plot_weights(), False)
