@@ -15,6 +15,7 @@ MAX_DAYS = 250
 MIN_PCT = 1
 MAX_PCT = 100
 DATE_LENGTH = 8
+OPTIMIZERS = ["msr", "mv", "hrp"]
 
 
 def get_args() -> argparse.Namespace:
@@ -52,36 +53,15 @@ def get_args() -> argparse.Namespace:
         required=True,
     )
     parser.add_argument(
-        "--strategy1_type",
+        "--optimizer",
         type=str,
-        help="'M' (momentum) or 'R' (reversal) for strategy 1",
+        help="The optimizer to use (e.g., msr, mv, hrp)",
         required=True,
     )
     parser.add_argument(
-        "--strategy2_type",
-        type=str,
-        help="'M' (momentum) or 'R' (reversal) for strategy 2",
-        required=True,
-    )
-    parser.add_argument(
-        "--days1",
-        type=int,
-        help="""The number of trading days used to compute strategy1-related
- returns""",
-        required=True,
-    )
-    parser.add_argument(
-        "--days2",
-        type=int,
-        help="""The number of trading days used to compute strategy2-related
- returns""",
-        required=True,
-    )
-    parser.add_argument(
-        "--top_pct",
-        type=int,
-        help="The percentage of stocks to pick to go long (1 to 100)",
-        required=True,
+        "--plot_weights",
+        help="Whether to plot the weights of the portfolio",
+        action="store_true"
     )
 
     return parser
@@ -98,11 +78,8 @@ class InputData:
         b: int = -1,
         e: int = -1,
         initial_aum: int = -1,
-        strategy1_type: str = -1,
-        strategy2_type: str = -1,
-        days1: int = -1,
-        days2: int = -1,
-        top_pct: int = -1,
+        optimizer: str = -1,
+        plot_weights: bool = -1,
     ) -> None:
         """
         This method initialises the InputData class.
@@ -138,30 +115,15 @@ class InputData:
         else:
             self.initial_aum = initial_aum
 
-        if strategy1_type == -1:
-            self.strategy1_type = get_args().parse_args().strategy1_type
+        if optimizer == -1:
+            self.optimizer = get_args().parse_args().optimizer
         else:
-            self.strategy1_type = strategy1_type
+            self.optimizer = optimizer
 
-        if strategy2_type == -1:
-            self.strategy2_type = get_args().parse_args().strategy2_type
+        if plot_weights == -1:
+            self.plot_weights = get_args().parse_args().plot_weights
         else:
-            self.strategy2_type = strategy2_type
-
-        if days1 == -1:
-            self.days1 = get_args().parse_args().days1
-        else:
-            self.days1 = days1
-
-        if days2 == -1:
-            self.days2 = get_args().parse_args().days2
-        else:
-            self.days2 = days2
-
-        if top_pct == -1:
-            self.top_pct = get_args().parse_args().top_pct
-        else:
-            self.top_pct = top_pct
+            self.plot_weights = plot_weights
 
     def get_tickers(self) -> List[str]:
         """
@@ -263,102 +225,37 @@ class InputData:
             raise ValueError("Initial AUM must be a positive integer.")
         return self.initial_aum
 
-    def get_top_pct(self) -> int:
+    def get_optimizer(self) -> str:
         """
-        Returns a validated top percentage from the user input.
+        Returns a validated optimizer from the user input.
 
         Raises:
-          ValueError: If the top percentage is not an integer, is not between
-            1 to 100, or is not a valid top percentage.
+          ValueError: If the optimizer is not a string or is not a valid
+            optimizer.
 
         Returns:
-          int: Returns the top percentage if it has been validated.
+          str: Returns the optimizer if it has been validated.
         """
-        if self.top_pct is None:
-            raise ValueError("Top percentage must be specified.")
-        if not isinstance(self.top_pct, int):
-            raise ValueError("Top percentage must be an integer.")
-        if self.top_pct < MIN_PCT or self.top_pct > MAX_PCT:
-            raise ValueError("Top percentage must be between 1 to 100.")
-        return self.top_pct
+        if self.optimizer is None:
+            raise ValueError("Optimizer must be specified.")
+        if not isinstance(self.optimizer, str):
+            raise ValueError("Optimizer must be a string.")
+        if self.optimizer.lower() not in OPTIMIZERS:
+            raise ValueError(
+                "Optimizer must be one of the following: msr, mv, hrp"
+            )
+        return self.optimizer
 
-    def get_strategy1_type(self) -> str:
+    def get_plot_weights(self) -> bool:
         """
-        Returns a validated strategy type from the user input for strategy 1.
+        Returns a validated plot_weights from the user input.
 
         Raises:
-          ValueError: If the strategy type is not a string, is not 'M' or 'R',
-            or is not a valid strategy type.
+          ValueError: If the plot_weights is not a boolean.
 
         Returns:
-          str: Returns the strategy type if it has been validated.
+          bool: Returns the plot_weights if it has been validated.
         """
-        if self.strategy1_type is None:
-            raise ValueError("Strategy 1 type must be specified.")
-        if not isinstance(self.strategy1_type, str):
-            raise ValueError("Strategy 1 type must be a string.")
-        if self.strategy1_type.upper() != "M" and \
-            self.strategy1_type.upper() != "R":
-            raise ValueError("Strategy 1 type must be either 'M' or 'R'.")
-        return self.strategy1_type
-
-    def get_strategy2_type(self) -> str:
-        """
-        Returns a validated strategy type from the user input for strategy 2.
-
-        Raises:
-          ValueError: If the strategy type is not a string, is not 'M' or 'R',
-            or is not a valid strategy type.
-
-        Returns:
-          str: Returns the strategy type if it has been validated.
-        """
-        if self.strategy2_type is None:
-            raise ValueError("Strategy 2 type must be specified.")
-        if not isinstance(self.strategy2_type, str):
-            raise ValueError("Strategy 2 type must be a string.")
-        if self.strategy2_type.upper() != "M" and \
-            self.strategy2_type.upper() != "R":
-            raise ValueError("Strategy 2 type must be either 'M' or 'R'.")
-        return self.strategy2_type
-
-    def get_days1(self) -> int:
-        """
-        Returns a validated number of trading days from the user input for
-        strategy 1.
-
-        Raises:
-          ValueError: If the number of trading days is not an integer, is not
-            between 1 to 250, or is not a valid number of trading days.
-
-        Returns:
-          int: Returns the number of trading days if it has been validated.
-        """
-        if self.days1 is None:
-            raise ValueError("Strategy 1 days must be specified.")
-        if not isinstance(self.days1, int):
-            raise ValueError("Strategy 1 days must be an integer.")
-        if self.days1 < MIN_DAYS or self.days1 > MAX_DAYS:
-            raise ValueError("Strategy 1 days must be between 1 to 250.")
-        return self.days1
-
-    def get_days2(self) -> int:
-        """
-        Returns a validated number of trading days from the user input for
-        strategy 2.
-
-        Raises:
-          ValueError: If the number of trading days is not an integer, is not
-            between 1 to 250, or is not a valid number of trading days.
-
-        Returns:
-          int: Returns the number of trading days if it has been validated.
-        """
-        if self.days2 is None:
-            raise ValueError("Strategy 2 days must be specified.")
-        if not isinstance(self.days2, int):
-            raise ValueError("Strategy 2 days must be an integer.")
-        if self.days2 < MIN_DAYS or self.days2 > MAX_DAYS:
-            raise ValueError("Strategy 2 days must be between 1 to 250.")
-        return self.days2
-    
+        if self.plot_weights is None:
+            raise ValueError("Plot weights must be specified.")
+        return self.plot_weights

@@ -30,16 +30,9 @@ class TestInputData(unittest.TestCase):
                 "20230318",
                 "--initial_aum",
                 "10000",
-                "--strategy1_type",
-                "M",
-                "--strategy2_type",
-                "R",
-                "--days1",
-                "100",
-                "--days2",
-                "150",
-                "--top_pct",
-                "20",
+                "--optimizer",
+                "msr",
+                "--plot_weights"
             ]
         )
         self.assertEqual(args.tickers,
@@ -47,11 +40,8 @@ class TestInputData(unittest.TestCase):
         self.assertEqual(args.b, 20220101)
         self.assertEqual(args.e, 20230318)
         self.assertEqual(args.initial_aum, 10000)
-        self.assertEqual(args.strategy1_type, "M")
-        self.assertEqual(args.strategy2_type, "R")
-        self.assertEqual(args.days1, 100)
-        self.assertEqual(args.days2, 150)
-        self.assertEqual(args.top_pct, 20)
+        self.assertEqual(args.optimizer, "msr")
+        self.assertEqual(args.plot_weights, True)
 
     def test_missing_args(self) -> None:
         """
@@ -77,17 +67,8 @@ class TestInputData(unittest.TestCase):
                 "82j23i2",
                 "--initial_aum",
                 "alsms12",
-                "--strategy1_type",
-                "M",
-                "--strategy2_type",
-                "R",
-                "--days1",
-                "100",
-                "--days2",
-                "150",
-                "--top_pct",
-                "l12i2s",
-                "--wrong-stuff",
+                "--optimizer",
+                "dslkfnsndfskd",
             ],
         )
 
@@ -104,19 +85,12 @@ class TestInputData(unittest.TestCase):
                 "20220101",
                 "--initial_aum",
                 "10000",
-                "--strategy1_type",
-                "M",
-                "--strategy2_type",
-                "R",
-                "--days1",
-                "100",
-                "--days2",
-                "150",
-                "--top_pct",
-                "20",
+                "--optimizer",
+                "msr"
             ]
         )
         self.assertIsNone(args.e)
+        self.assertEqual(args.plot_weights, False)
 
     def setUp(self):
         """
@@ -127,11 +101,8 @@ class TestInputData(unittest.TestCase):
             "b": 20220101,
             "e": 20221231,
             "initial_aum": 10000,
-            "strategy1_type": "M",
-            "strategy2_type": "R",
-            "days1": 10,
-            "days2": 20,
-            "top_pct": 10,
+            "optimizer": "msr",
+            "plot_weights": "True"
         }
 
     def test_get_tickers_valid(self):
@@ -215,93 +186,6 @@ class TestInputData(unittest.TestCase):
                 )
                 input_data.get_initial_aum()
 
-    def test_get_top_pct_valid(self):
-        """
-        Tests the get_top_pct method with valid input.
-        """
-        input_data = InputData(**self.default_args)
-        self.assertEqual(input_data.get_top_pct(), 10)
-
-    def test_get_top_pct_invalid(self):
-        """
-        Tests the get_top_pct method with invalid input.
-        """
-        for invalid_pct in [0, 101, None, "10", "dabdad"]:
-            with self.assertRaises(ValueError):
-                input_data = InputData(**{**self.default_args,
-                                          "top_pct": invalid_pct})
-                input_data.get_top_pct()
-
-    def test_get_strategy1_type_valid(self):
-        """
-        Tests the get_strategy1_type method with valid input.
-        """
-        input_data = InputData(**self.default_args)
-        self.assertEqual(input_data.get_strategy1_type(), "M")
-
-    def test_get_strategy1_type_invalid(self):
-        """
-        Tests the get_strategy1_type method with invalid input.
-        """
-        for invalid_type in [None, "dabdad", 1]:
-            with self.assertRaises(ValueError):
-                input_data = InputData(
-                    **{**self.default_args, "strategy1_type": invalid_type}
-                )
-                input_data.get_strategy1_type()
-
-    def test_get_strategy2_type_valid(self):
-        """
-        Tests the get_strategy2_type method with valid input.
-        """
-        input_data = InputData(**self.default_args)
-        self.assertEqual(input_data.get_strategy2_type(), "R")
-
-    def test_get_strategy2_type_invalid(self):
-        """
-        Tests the get_strategy2_type method with invalid input.
-        """
-        for invalid_type in [None, "dabdad", 1]:
-            with self.assertRaises(ValueError):
-                input_data = InputData(
-                    **{**self.default_args, "strategy2_type": invalid_type}
-                )
-                input_data.get_strategy2_type()
-
-    def test_get_days1_valid(self):
-        """
-        Tests the get_days1 method with valid input.
-        """
-        input_data = InputData(**self.default_args)
-        self.assertEqual(input_data.get_days1(), 10)
-
-    def test_get_days1_invalid(self):
-        """
-        Tests the get_days1 method with invalid input.
-        """
-        for invalid_days in [0, 366, None, "10", "dabdad"]:
-            with self.assertRaises(ValueError):
-                input_data = InputData(**{**self.default_args,
-                                          "days1": invalid_days})
-                input_data.get_days1()
-
-    def test_get_days2_valid(self):
-        """
-        Tests the get_days2 method with valid input.
-        """
-        input_data = InputData(**self.default_args)
-        self.assertEqual(input_data.get_days2(), 20)
-
-    def test_get_days2_invalid(self):
-        """
-        Tests the get_days2 method with invalid input.
-        """
-        for invalid_days in [0, 366, None, "10", "dabdad"]:
-            with self.assertRaises(ValueError):
-                input_data = InputData(**{**self.default_args,
-                                          "days2": invalid_days})
-                input_data.get_days2()
-
     def test_beginning_date_greater_than_today(self):
         """
         Tests the get_beginning_date method with a beginning
@@ -311,3 +195,33 @@ class TestInputData(unittest.TestCase):
             input_data = InputData(**{**self.default_args,
                                       "b": 99990101})
             input_data.get_beginning_date()
+
+    def test_optimizers_valid(self):
+        """
+        Tests the get_optimizer method with valid input.
+        """
+        # valid options are msr mv and hrp
+        for valid_optimizers in ["msr", "mv", "hrp", "MSR", "MV", "HRP",
+                                 "MsR", "Mv", "HrP"]:
+            input_data = InputData(**{**self.default_args,
+                                      "optimizer": valid_optimizers})
+            self.assertEqual(input_data.get_optimizer(), valid_optimizers)
+
+    def test_optimizers_invalid(self):
+        """
+        Tests the get_optimizer method with invalid input.
+        """
+        for invalid_optimizers in ["msr,ms", "173129129","ahdahaj", "#@"]:
+            with self.assertRaises(ValueError):
+                input_data = InputData(**{**self.default_args,
+                                          "optimizer": invalid_optimizers})
+                input_data.get_optimizer()
+
+    def test_plot_weights_valid(self):
+        """
+        Tests the get_plot_weights method with valid input.
+        """
+        input_data = InputData(**self.default_args)
+        self.assertEqual(input_data.get_plot_weights(), 'True')
+        input_data2 = InputData(**{**self.default_args, "plot_weights": False})
+        self.assertEqual(input_data2.get_plot_weights(), False)
