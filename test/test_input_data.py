@@ -211,7 +211,7 @@ class TestInputData(unittest.TestCase):
         """
         Tests the get_optimizer method with invalid input.
         """
-        for invalid_optimizers in ["msr,ms", "173129129","ahdahaj", "#@"]:
+        for invalid_optimizers in ["msr,ms", 173129129,"ahdahaj", "#@", None]:
             with self.assertRaises(ValueError):
                 input_data = InputData(**{**self.default_args,
                                           "optimizer": invalid_optimizers})
@@ -225,3 +225,14 @@ class TestInputData(unittest.TestCase):
         self.assertEqual(input_data.get_plot_weights(), "True")
         input_data2 = InputData(**{**self.default_args, "plot_weights": False})
         self.assertEqual(input_data2.get_plot_weights(), False)
+
+    def test_plot_weights_invalid(self):
+        """
+        Tests the get_plot_weights method with invalid input.
+        """
+        for invalid_plot_weights in [None]:
+            with self.assertRaises(ValueError):
+                input_data = InputData(
+                    **{**self.default_args,
+                       "plot_weights": invalid_plot_weights})
+                input_data.get_plot_weights()
