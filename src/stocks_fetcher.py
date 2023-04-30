@@ -71,6 +71,7 @@ class StocksFetcher:
             res[ticker_symbol] = \
                 self.fetch_stock_data(ticker_symbol, dt_start, dt_end)
         return res
+
     def fetch(
         self, tickers: List[str], start_date: str, end_date: str
     ) -> pd.DataFrame:
