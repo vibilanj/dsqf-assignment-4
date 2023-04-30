@@ -5,11 +5,61 @@
 - [x] Cleanup old requirements
 - [ ] Change InputData to handle new arguments
 - [ ] Change RunBacktest to use PyPortfolioOpt
-- [ ] Change BacktestStats to produces new statistics
+- [ ] Filter BacktestStats to produces new statistics
 - [ ] Update requirements
 - [ ] Testing
 - [ ] Documentation
 - [ ] Linting
+
+## run_backtest.py
+1. parameters: 
+   1. stocks_data: pd.DataFrame, 
+   2. initial_aum: int, 
+   3. beginning_date: str, 
+   4. optimizer: str
+2. attributes:
+   1. self.stocks_data: pf.DataFrame
+   2. self.initial_aum: int,
+   3. self.beginning_date: str
+   4. self.portfolio_performance: pd.DataFrame 
+      1. Date starting from first month end to ending date
+      2. AUM
+   5. self.portfolio: List[Tuple[str, float]]
+   6. self.portfolio_record: List[List[Tuple[str, float]]]
+   7. self.month_end_indexes: List[int]
+3. methods
+   1. init_portfolio_performance(self) -> None
+   2. get_month_end_indexes_from_b(self) -> List[int]
+   3. calc_aum(self, date_index: int) -> float
+   4. calc_stocks_weight(self, date_index: int, optimizer) -> List[Tuple[str, float]]
+      1. Filter the relevant stocks_data:
+         1. start = date - 250
+         2. end = ending_date
+      2. if optimizer is "msr" or "mv":
+         1. calculate mean historical return
+            1. mu = expected_returns.mean_historical_return(relevant stocks_data)
+         2. calculate the sample covariance
+            1. S = risk_models.sample_cov(df)
+         3. create efficientFrontier object
+            1. ef = EfficientFrontier(mu, S)
+         4. get and return stocks clean weight based on optimizer
+            1. weights = 
+               1. ef.max_sharpe()
+               2. ef.min_volatility()
+      3. else if it is "hrp":
+         1. 
+      4. else:
+         1. raise exception
+   5. fill_up_portfolio_performance(self) -> None
+      1. loop through Date starting from the first month end index to the ending date
+      2. calculate the aum at that date and update self.portfolio_performance
+         1. self.calc_aum(date_index)
+      3. if the date is a month end index, rebalance:
+         1. new_portfolio = self.calc_stocks_weight(date_index)
+         2. append new_portfolio to self.portfolio_record
+         3. update self.portfolio
+      4. 
+
 
 ## Setting up virtual environment (recommended)
 
