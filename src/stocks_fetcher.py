@@ -26,6 +26,7 @@ class StocksFetcher:
         self, ticker_symbol: str, dt_start: datetime, dt_end: datetime
     ) -> pd.DataFrame:
         """
+        TODO: to delete
         Fetches the stock data from yFinance from the start date to the
         end date provided.
 
@@ -47,6 +48,7 @@ class StocksFetcher:
         self, ticker_symbols: List[str], beginning_date: str, ending_date: str
     ) -> Dict[str, pd.DataFrame]:
         """
+        TODO: to delete
         Fetches the stock data of multiple tickers from yFinance
         with an additional 1 year 2 months from the expected begin to end date.
 
@@ -86,7 +88,12 @@ class StocksFetcher:
         dt_start = datetime.strptime(start_date, DATE_FORMAT) - \
             timedelta(days=430)
         dt_end = datetime.strptime(end_date, DATE_FORMAT)
-        return yf.download(
+        data = yf.download(
             tickers, 
             dt_start.strftime(YF_DATE_FORMAT), 
-            dt_end.strftime(YF_DATE_FORMAT))
+            dt_end.strftime(YF_DATE_FORMAT))["Adj Close"]
+        if (len(tickers) == 1):
+            res = data.to_frame()
+            res.rename(columns = {'Adj Close': tickers[0]}, inplace = True)
+            return res
+        return data
