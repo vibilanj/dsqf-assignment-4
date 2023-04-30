@@ -17,17 +17,36 @@
 
 import yfinance as yf
 from pypfopt.efficient_frontier import EfficientFrontier
+from pypfopt.hierarchical_portfolio import HRPOpt
 from pypfopt import risk_models
 from pypfopt import expected_returns
 
 tickers = ["MSFT", "TSLA", "AAPL"]
-df = yf.download(tickers, start="2021-01-01", end="2022-02-01")["Adj Close"]
+df = yf.download(tickers, start="2022-01-01", end="2023-01-31")["Adj Close"]
 
 # Calculate expected returns and sample covariance
 mu = expected_returns.mean_historical_return(df)
 S = risk_models.sample_cov(df)
 
-# Optimize for maximal Sharpe ratio
-ef = EfficientFrontier(mu, S)
-weights = ef.max_sharpe()
-ef.portfolio_performance(verbose=True)
+# # Optimize for maximal Sharpe ratio
+# ef = EfficientFrontier(mu, S)
+# weights = ef.max_sharpe()
+# clean_weights = ef.clean_weights()
+# ef.portfolio_performance(verbose=True)
+
+# # Optimize for minimum variance/min volatility 
+# ef = EfficientFrontier(mu, S)
+# weights = ef.min_volatility()
+# clean_weights = ef.clean_weights()
+# ef.portfolio_performance(verbose=True)
+
+# # Optimize for heirarchical risk parity
+# hrp = HRPOpt(df)
+# hrp.optimize()
+# weights = hrp.clean_weights()
+# hrp.portfolio_performance(verbose=True)
+
+# # Optimize using hrp, second method
+# hrp = HRPOpt(returns=df, cov_matrix=S)
+# weights = hrp.optimize()
+# hrp.portfolio_performance(verbose=True)
