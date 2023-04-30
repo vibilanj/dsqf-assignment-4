@@ -31,35 +31,32 @@
    1. init_portfolio_performance(self) -> None
    2. get_month_end_indexes_from_b(self) -> List[int]
    3. calc_aum(self, date_index: int) -> float
-   4. calc_stocks_weight(self, date_index: int, optimizer) -> List[Tuple[str, float]]
-      1. Filter the relevant stocks_data:
-         1. start = date - 250
-         2. end = ending_date
+   4. update_portfolio(self, date_index: int, optimizer) -> List[Tuple[str, float]]
+      1. df = self.stocks_date[date_index - 250, date_index]
       2. if optimizer is "msr" or "mv":
-         1. calculate mean historical return
-            1. mu = expected_returns.mean_historical_return(relevant stocks_data)
-         2. calculate the sample covariance
-            1. S = risk_models.sample_cov(df)
-         3. create efficientFrontier object
-            1. ef = EfficientFrontier(mu, S)
-         4. get and return stocks clean weight based on optimizer
-            1. weights = 
-               1. ef.max_sharpe()
-               2. ef.min_volatility()
+         1. mu = expected_returns.mean_historical_return(df)
+         2. S = risk_models.sample_cov(df)
+         3. model = EfficientFrontier(mu, S)
+         4. weights = 
+            1. model.max_sharpe(), or
+            2. model.min_volatility()
       3. else if it is "hrp":
-         1. 
+         1. model = HRPOpt(df)
+         2. model.optimize()
+         3. weights = model.clean_weights()
+         4. model.portfolio_performance(verbose=True)
       4. else:
          1. raise exception
+      5. update_portfolio
+         1. append weights to self.portfolio_record
+      6. TODO: update portfolio_performance with annual volatility etc check if needs to be kept in some dataframe
    5. fill_up_portfolio_performance(self) -> None
       1. loop through Date starting from the first month end index to the ending date
       2. calculate the aum at that date and update self.portfolio_performance
          1. self.calc_aum(date_index)
       3. if the date is a month end index, rebalance:
-         1. new_portfolio = self.calc_stocks_weight(date_index)
-         2. append new_portfolio to self.portfolio_record
-         3. update self.portfolio
-      4. 
-
+         1. self.update_portfolio()
+      4. cut portfolio performance to only start from from the first end of month
 
 ## Setting up virtual environment (recommended)
 
