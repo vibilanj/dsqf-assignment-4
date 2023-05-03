@@ -12,12 +12,12 @@
 - [ ] Linting
 
 ## run_backtest.py
-1. parameters: 
+1. parameters: DONE
    1. stocks_data: pd.DataFrame, 
    2. initial_aum: int, 
    3. beginning_date: str, 
    4. optimizer: str
-2. attributes:
+2. attributes: DONE
    1. self.stocks_data: pf.DataFrame
    2. self.initial_aum: int,
    3. self.beginning_date: str
@@ -28,8 +28,8 @@
    6. self.portfolio_record: List[List[Tuple[str, float]]]
    7. self.month_end_indexes: List[int]
 3. methods
-   1. init_portfolio_performance(self) -> None
-   2. get_month_end_indexes_from_b(self) -> List[int]
+   1. init_portfolio_performance(self) -> None DONE
+   2. get_month_end_indexes_from_b(self) -> List[int] DONE
    3. calc_aum(self, date_index: int) -> float
    4. update_portfolio(self, date_index: int, optimizer) -> List[Tuple[str, float]]
       1. df = self.stocks_date[date_index - 250, date_index]
