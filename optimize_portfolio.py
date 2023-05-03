@@ -46,12 +46,14 @@ if __name__ == "__main__":
 
     # Getting the backtest performance and IC information
     portfolio_perf = backtest.portfolio_performance
+    weights_rec = backtest.weights_record
 
     # Calculating backtest statistics
     backtest_statistics = BacktestStats(
-        portfolio_performance=portfolio_perf
+        portfolio_performance=portfolio_perf,
+        weights_record = weights_rec
     )
 
     # Printing statistics summary and geenrating plots
     backtest_statistics.print_summary()
-    # backtest_statistics.plot_daily_aum()
+    backtest_statistics.plot_portfolio_weights()

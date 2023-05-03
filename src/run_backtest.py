@@ -1,7 +1,7 @@
 """
 This module is responsible for running the backtest simulation.
 """
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import pandas as pd
 from collections import OrderedDict
@@ -64,6 +64,7 @@ class RunBacktest:
             self.init_portfolio_performance()
         self.portfolio: OrderedDict[str, float] = OrderedDict()
         self.portfolio_record: List[OrderedDict[str, float]] = []
+        self.weights_record: Tuple[List[str], List[OrderedDict[str, float]]] = ([], [])
         self.month_end_indexes: List[int] = self.get_month_end_indexes_from_b()
 
     def init_portfolio_performance(self) -> None:
@@ -135,11 +136,16 @@ class RunBacktest:
                 ef.min_volatility()
             weights = ef.clean_weights()
 
-        aum = self.portfolio_performance.at[date_index, AUM]
-        for stock, weight in weights.items():
-            weights[stock] = weight * aum / self.stocks_data[stock].iloc[date_index]
+        date = str(self.stocks_data.index[date_index])[:10]
+        self.weights_record[0].append(date)
+        self.weights_record[1].append(weights)
 
-        self.portfolio = weights
+        portfolio = weights.copy()
+        aum = self.portfolio_performance.at[date_index, AUM]
+        for stock, weight in portfolio.items():
+            portfolio[stock] = weight * aum / self.stocks_data[stock].iloc[date_index]
+
+        self.portfolio = portfolio
         self.portfolio_record.append(self.portfolio)
 
     def fill_up_portfolio_performance(self) -> None:

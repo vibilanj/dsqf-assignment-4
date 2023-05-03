@@ -4,8 +4,8 @@
 - [x] Fix linting spaces, install autoformatter
 - [x] Cleanup old requirements
 - [x] Change InputData to handle new arguments
-- [ ] Change RunBacktest to use PyPortfolioOpt
-- [ ] Filter BacktestStats to produces new statistics
+- [x] Change RunBacktest to use PyPortfolioOpt
+- [x] Filter BacktestStats to produces new statistics
 - [ ] Update requirements
 - [ ] Testing
 - [ ] Documentation

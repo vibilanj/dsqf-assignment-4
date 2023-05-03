@@ -2,8 +2,8 @@
 This module is responsible for the backtest statistics.
 """
 from math import sqrt
-from typing import List
-
+from typing import List, Tuple
+from collections import OrderedDict
 import pandas as pd
 
 # Constants
@@ -22,7 +22,8 @@ class BacktestStats:
 
     def __init__(
         self,
-        portfolio_performance: pd.DataFrame
+        portfolio_performance: pd.DataFrame,
+        weights_record: Tuple[List[str], List[OrderedDict[str, float]]]
     ):
         """TODO
         This method initialises the BacktestStats class.
@@ -33,6 +34,7 @@ class BacktestStats:
             backtest simulation.
         """
         self.portfolio_performance: pd.DataFrame = portfolio_performance
+        self.weights_record: Tuple[List[str], List[OrderedDict[str, float]]] = weights_record
 
         """
     beginning_trading_date (pd.Timestamp): The timestamp of the
@@ -133,7 +135,7 @@ class BacktestStats:
         return sqrt(average_squared_daily_deviations)
 
     def get_annualized_volatility(self) -> float:
-        """
+        """ TODO
         https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
         """
         return self.get_daily_standard_deviation() * sqrt(TRADING_DAYS_PER_YEAR)
@@ -150,7 +152,7 @@ class BacktestStats:
         ) / self.get_daily_standard_deviation()
 
     def get_annualized_sharpe_ratio(self) -> float:
-        """
+        """ TODO
         https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
         """
         return self.get_daily_sharpe_ratio() * sqrt(TRADING_DAYS_PER_YEAR)
@@ -171,8 +173,8 @@ class BacktestStats:
     """
         print(out_str)
 
-    def plot_daily_aum(self, path: str = "daily_aum") -> None:
-        """
+    def plot_portfolio_weights(self, path: str = "portfolio_weights") -> None:
+        """TODO
         Plots the daily asset under management amount throughout
         the backtesting period.
 
@@ -183,13 +185,16 @@ class BacktestStats:
         Returns:
           None: Generates a plot of the daily AUM and saves it to a file.
         """
-        daily_aum = self.portfolio_performance.set_index(DATETIME)[AUM]
-        fig = daily_aum.plot.line(
-            title="Daily AUM",
+        weights = pd.DataFrame(self.weights_record[1], index=self.weights_record[0])
+        weights.index = pd.to_datetime(weights.index)
+
+        fig = weights.plot.line(
+            title="Portfolio Weights",
             grid=True,
-            legend=False,
-            xlabel="Close Date",
-            ylabel="AUM ($)",
+            legend=True,
+            xlabel="Date",
+            ylabel="Weight",
+            marker="o"
         ).get_figure()
         fig.savefig(path)
         fig.clf()
