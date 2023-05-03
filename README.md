@@ -3,7 +3,7 @@
 ## TODO
 - [x] Fix linting spaces, install autoformatter
 - [x] Cleanup old requirements
-- [ ] Change InputData to handle new arguments
+- [x] Change InputData to handle new arguments
 - [ ] Change RunBacktest to use PyPortfolioOpt
 - [ ] Filter BacktestStats to produces new statistics
 - [ ] Update requirements

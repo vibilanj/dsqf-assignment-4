@@ -22,7 +22,7 @@ from pypfopt import risk_models
 from pypfopt import expected_returns
 
 tickers = ["MSFT", "TSLA", "AAPL"]
-df = yf.download(tickers, start="2022-01-01", end="2023-01-31", progress=False)["Adj Close"]
+df = yf.download(tickers, start="2021-01-01", end="2023-01-31", progress=False)["Adj Close"]
 
 # Calculate expected returns and sample covariance
 mu = expected_returns.mean_historical_return(df)
@@ -41,7 +41,7 @@ S = risk_models.sample_cov(df)
 # ef.portfolio_performance(verbose=True)
 
 # # Optimize for heirarchical risk parity
-# hrp = HRPOpt(df)
+# hrp = HRPOpt(df, S)
 # hrp.optimize()
 # weights = hrp.clean_weights()
 # hrp.portfolio_performance(verbose=True)
@@ -50,3 +50,8 @@ S = risk_models.sample_cov(df)
 # hrp = HRPOpt(returns=df, cov_matrix=S)
 # weights = hrp.optimize()
 # hrp.portfolio_performance(verbose=True)
+
+# Testing
+# for stock, amount in clean_weights.items():
+#     if (amount != 0.0):
+#         print(stock, amount)
