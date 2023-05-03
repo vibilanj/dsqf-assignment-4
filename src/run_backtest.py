@@ -135,6 +135,10 @@ class RunBacktest:
                 ef.min_volatility()
             weights = ef.clean_weights()
 
+        aum = self.portfolio_performance.at[date_index, AUM]
+        for stock, weight in weights.items():
+            weights[stock] = weight * aum / self.stocks_data[stock].iloc[date_index]
+
         self.portfolio = weights
         self.portfolio_record.append(self.portfolio)
 
@@ -145,7 +149,8 @@ class RunBacktest:
           AUM for each day in the specified time period.
         """
         for date_index in range(self.month_end_indexes[0], len(self.stocks_data.index)):
-            self.portfolio_performance.at[date_index, AUM] = self.calc_aum(date_index)
+            if date_index != self.month_end_indexes[0]:
+                self.portfolio_performance.at[date_index, AUM] = self.calc_aum(date_index)
 
             # rebalance and store new portfolio
             if date_index in self.month_end_indexes:

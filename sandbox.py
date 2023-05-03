@@ -29,10 +29,10 @@ mu = expected_returns.mean_historical_return(df)
 S = risk_models.sample_cov(df)
 
 # # Optimize for maximal Sharpe ratio
-# ef = EfficientFrontier(mu, S)
-# weights = ef.max_sharpe()
-# clean_weights = ef.clean_weights()
-# ef.portfolio_performance(verbose=True)
+ef = EfficientFrontier(mu, S)
+weights = ef.max_sharpe()
+clean_weights = ef.clean_weights()
+ef.portfolio_performance(verbose=True)
 
 # # Optimize for minimum variance/min volatility 
 # ef = EfficientFrontier(mu, S)

@@ -7,20 +7,10 @@ from typing import List
 import pandas as pd
 
 # Constants
-DATETIME_STR_FORMAT = "%d/%m/%Y"
 DATETIME = "datetime"
 AUM = "aum"
 IC = "ic"
-
-# Yahoo Finance ticker properties
-CLOSE_PRICE = "Close"
-DIVIDENDS = "Dividends"
-
-# Model Statistics Indexes
-STRATEGY1_COEFF_IDX = 0
-STRATEGY2_COEFF_IDX = 1
-STRATEGY1_T_IDX = 2
-STRATEGY2_T_IDX = 3
+TRADING_DAYS_PER_YEAR = 250
 
 
 class BacktestStats:
@@ -32,27 +22,17 @@ class BacktestStats:
 
     def __init__(
         self,
-        portfolio_performance: pd.DataFrame,
-        monthly_ic: pd.DataFrame,
-        model_statistics: pd.DataFrame,
+        portfolio_performance: pd.DataFrame
     ):
-        """
+        """TODO
         This method initialises the BacktestStats class.
 
         Args:
           portfolio_performance (pd.Dataframe): The dataframe containing
             the portfolio performance information calculated during the
             backtest simulation.
-          monthly_ic (pd.Dataframe): The dataframe containing the monthly
-            information coefficient information calculated during the
-            backtest simulation
-          model_statistics (pd.Dataframe): The dataframe containing the
-            model statistics information calculated during the backtest
-            simulation.
         """
         self.portfolio_performance: pd.DataFrame = portfolio_performance
-        self.monthly_ic: pd.DataFrame = monthly_ic
-        self.model_statistics: pd.DataFrame = model_statistics
 
         """
     beginning_trading_date (pd.Timestamp): The timestamp of the
@@ -62,27 +42,10 @@ class BacktestStats:
     latest_model_statistics (List[float]): The model statistics
       of the latest linear regression model.
     """
-        self.beginning_trading_date: pd.Timestamp = self.portfolio_performance[
-            DATETIME
-        ][0]
-        self.ending_trading_date: pd.Timestamp = list(
-            self.portfolio_performance[DATETIME]
-        )[-1]
-        self.latest_model_statistics: List[
-            float
-        ] = self.model_statistics.values.tolist()[-1]
-
-    def get_beginning_trading_date_str(self) -> str:
-        """
-        str: Returns the beginning trading day as a formatted string.
-        """
-        return self.beginning_trading_date.strftime(DATETIME_STR_FORMAT)
-
-    def get_ending_trading_date_str(self) -> str:
-        """
-        str: Returns the ending trading day as a formatted string.
-        """
-        return self.ending_trading_date.strftime(DATETIME_STR_FORMAT)
+        self.beginning_trading_date: pd.Timestamp = \
+          self.portfolio_performance[DATETIME][0]
+        self.ending_trading_date: pd.Timestamp = \
+          list(self.portfolio_performance[DATETIME])[-1]
 
     def get_number_of_days(self) -> int:
         """
@@ -109,8 +72,7 @@ class BacktestStats:
         float: Returns the profit or loss of the backtest strategy
           including dividends.
         """
-        dividends = list(self.portfolio_performance["dividends"])[-1]
-        return self.get_final_aum() - self.get_initial_aum() + dividends
+        return self.get_final_aum() - self.get_initial_aum()
 
     def get_total_stock_return(self) -> float:
         """
@@ -119,13 +81,6 @@ class BacktestStats:
         """
         return (self.get_final_aum() - self.get_initial_aum()) / \
             self.get_initial_aum()
-
-    def get_total_return(self) -> float:
-        """
-        float: Returns the total return of the backtest strategy
-          (including dividends).
-        """
-        return self.get_profit_loss() / self.get_initial_aum()
 
     def get_annualized_rate_of_return(self) -> float:
         """
@@ -138,20 +93,6 @@ class BacktestStats:
             (self.get_initial_aum() + self.get_profit_loss()) / \
                 self.get_initial_aum()
         ) ** (365 / self.get_number_of_days()) - 1
-
-    def get_average_daily_aum(self) -> float:
-        """
-        float: Returns the average daily assets under management amount.
-        """
-        return sum(list(self.portfolio_performance[AUM])) / len(
-            self.portfolio_performance[AUM]
-        )
-
-    def get_maximum_daily_aum(self) -> float:
-        """
-        float: Returns the maximum daily assets under management amount.
-        """
-        return max(list(self.portfolio_performance[AUM]))
 
     def get_daily_returns(self) -> List[float]:
         """
@@ -191,6 +132,12 @@ class BacktestStats:
         )
         return sqrt(average_squared_daily_deviations)
 
+    def get_annualized_volatility(self) -> float:
+        """
+        https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
+        """
+        return self.get_daily_standard_deviation() * sqrt(TRADING_DAYS_PER_YEAR)
+
     def get_daily_sharpe_ratio(self) -> float:
         """
         float: Returns the sharpe ratio of the portfolio (assuming
@@ -202,33 +149,11 @@ class BacktestStats:
             self.get_average_daily_return() - 0.0001
         ) / self.get_daily_standard_deviation()
 
-    def get_strategy1_coefficient(self) -> float:
+    def get_annualized_sharpe_ratio(self) -> float:
         """
-        float: Returns the linear regression coefficient of the
-          training feature corresponding to the first strategy.
+        https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
         """
-        return self.latest_model_statistics[STRATEGY1_COEFF_IDX]
-
-    def get_strategy2_coefficient(self) -> float:
-        """
-        float: Returns the linear regression coefficient of the
-          training feature corresponding to the second strategy.
-        """
-        return self.latest_model_statistics[STRATEGY2_COEFF_IDX]
-
-    def get_strategy1_t_value(self) -> float:
-        """
-        float: Returns the linear regression t-value of the
-          training feature corresponding to the first strategy.
-        """
-        return self.latest_model_statistics[STRATEGY1_T_IDX]
-
-    def get_strategy2_t_value(self) -> float:
-        """
-        float: Returns the linear regression t-value of the
-          training feature corresponding to the second strategy.
-        """
-        return self.latest_model_statistics[STRATEGY2_T_IDX]
+        return self.get_daily_sharpe_ratio() * sqrt(TRADING_DAYS_PER_YEAR)
 
     def print_summary(self) -> None:
         """
@@ -236,24 +161,13 @@ class BacktestStats:
           statistics.
         """
         out_str = f"""
-    Begin Date: {self.get_beginning_trading_date_str()}
-    End Date: {self.get_ending_trading_date_str()}
-    Number of Days: {self.get_number_of_days()}
+    Backtest Stats
+
+    Annual Return: {self.get_annualized_rate_of_return() * 100:.3f}%
+    Annual Volatility: {self.get_annualized_volatility() * 100:.3f}%
+    Annual Sharpe Ratio: {self.get_annualized_sharpe_ratio():.5f}
     Total Stock Return: {self.get_total_stock_return() * 100:.3f}%
-    Total Return: {self.get_total_return() * 100:.3f}%
-    Annualized Rate of Return: {self.get_annualized_rate_of_return() * 100:.3f}%
-    Initial AUM: {self.get_initial_aum():.5f}
-    Final AUM: {self.get_final_aum():.5f}
-    Average Daily AUM: {self.get_average_daily_aum():.5f}
-    Maximum Daily AUM: {self.get_maximum_daily_aum():.5f}
     Profit and Loss: {self.get_profit_loss():.5f}
-    Average Daily Return: {self.get_average_daily_return() * 100:.5f}%
-    Daily Standard Deviation: {self.get_daily_standard_deviation() * 100:.5f}%
-    Daily Sharpe Ratio: {self.get_daily_sharpe_ratio():.5f}
-    Strategy 1 Coefficient: {self.get_strategy1_coefficient():.5f}
-    Strategy 2 Coefficient: {self.get_strategy2_coefficient():.5f}
-    Strategy 1 T-Value: {self.get_strategy1_t_value():.5f}
-    Strategy 2 T-Value: {self.get_strategy2_t_value():.5f}
     """
         print(out_str)
 
@@ -276,29 +190,6 @@ class BacktestStats:
             legend=False,
             xlabel="Close Date",
             ylabel="AUM ($)",
-        ).get_figure()
-        fig.savefig(path)
-        fig.clf()
-
-    def plot_monthly_cumulative_ic(self, path: str = "cumulative_ic") -> None:
-        """
-        Plots the monthly cumulative information coefficient throughout
-        the backtesting period.
-
-        Args:
-          path (str): Specifies the path where the plot is saved.
-          Defaults to "cumulative_ic".
-
-        Returns:
-          None: Generates a plot of the monthly IC and saves it to a file.
-        """
-        ic = self.monthly_ic.set_index(DATETIME)[IC]
-        fig = ic.plot.line(
-            title="Monthly Cumulative IC",
-            grid=True,
-            legend=False,
-            xlabel="Close Date",
-            ylabel="Cumulative IC",
         ).get_figure()
         fig.savefig(path)
         fig.clf()

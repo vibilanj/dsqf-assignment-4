@@ -47,14 +47,11 @@ if __name__ == "__main__":
     # Getting the backtest performance and IC information
     portfolio_perf = backtest.portfolio_performance
 
-    # # Calculating backtest statistics
-    # backtest_statistics = BacktestStats(
-    #     portfolio_performance=portfolio_perf,
-    #     monthly_ic=portfolio_ic,
-    #     model_statistics=model_stats,
-    # )
+    # Calculating backtest statistics
+    backtest_statistics = BacktestStats(
+        portfolio_performance=portfolio_perf
+    )
 
-    # # Printing statistics summary and geenrating plots
-    # backtest_statistics.print_summary()
+    # Printing statistics summary and geenrating plots
+    backtest_statistics.print_summary()
     # backtest_statistics.plot_daily_aum()
-    # backtest_statistics.plot_monthly_cumulative_ic()
