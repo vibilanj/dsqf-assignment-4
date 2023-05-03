@@ -22,7 +22,7 @@ class TestStocksFetcher(unittest.TestCase):
         ticker = "AAPL"
         tickers_str = [ticker]
         sf = StocksFetcher()
-        res = sf.fetch(tickers_str, start_str, end_str)
+        res = sf.fetch_stocks_data(tickers_str, start_str, end_str)
         self.assertFalse(res.empty)
         self.assertTrue(len(res.index) > 250)
         self.assertListEqual(
@@ -37,7 +37,7 @@ class TestStocksFetcher(unittest.TestCase):
         end_str = "20230302"
         tickers_str = ["AAPL", "MSFT", "WMT"]
         sf = StocksFetcher()
-        res = sf.fetch(tickers_str, start_str, end_str)
+        res = sf.fetch_stocks_data(tickers_str, start_str, end_str)
         self.assertFalse(res.empty)
         self.assertTrue(len(res.index) > 250)
         self.assertListEqual(

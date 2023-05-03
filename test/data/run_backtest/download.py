@@ -4,7 +4,7 @@ sys.path.append("/.../src")
 
 tickers = ["MSFT", "WMT", "LMT", "SPY", "GM", "PG"]
 sf = StocksFetcher()
-data = sf.fetch(
+data = sf.fetch_stocks_data(
     tickers,
     "20220101",
     "20230101"
