@@ -39,7 +39,8 @@ class StocksFetcher:
         """
         dt_start = datetime.strptime(beginning_date, DATE_FORMAT) - \
             timedelta(days=430)
-        dt_end = datetime.strptime(ending_date, DATE_FORMAT)
+        dt_end = datetime.strptime(ending_date, DATE_FORMAT) + \
+            timedelta(days=1)
         data = yf.download(
             tickers, 
             dt_start.strftime(YF_DATE_FORMAT),
