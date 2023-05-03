@@ -72,7 +72,7 @@ class RunBacktest:
           the datetime indexes in the specified period and the initial
           AUM.
         """
-        datetime_indexes = list(self.stocks_data.values())[0].index.to_list()
+        datetime_indexes = self.stocks_data.index.to_list()
         portfolio_performance = pd.DataFrame()
         portfolio_performance[DATETIME] = datetime_indexes
         portfolio_performance[AUM] = [
@@ -85,7 +85,7 @@ class RunBacktest:
         List[int]: Returns the indexes of the month end dates starting
           from the beginning date.
         """
-        datetime_indexes = list(self.stocks_data.values())[0].index.to_list()
+        datetime_indexes = self.stocks_data.index.to_list()
         b_timestamp = pd.to_datetime(self.beginning_date, format=DATE_FORMAT)
         month_end_indexes = []
 
@@ -120,7 +120,7 @@ class RunBacktest:
         Args:
             date_index (int): _description_
         """
-        df = self.stocks_data[date_index - 249, date_index + 1]
+        df = self.stocks_data[date_index - 249 : date_index + 1]
         sample_covariance = risk_models.sample_cov(df)
         if self.optimizer == HRP:
             hrp = HRPOpt(df, sample_covariance)
@@ -144,7 +144,7 @@ class RunBacktest:
           fills up the dataframe of portfolio performance with the calculated
           AUM for each day in the specified time period.
         """
-        for date_index in range(self.month_end_indexes[0], len(list(self.stocks_data.values())[0].index)):
+        for date_index in range(self.month_end_indexes[0], len(self.stocks_data.index)):
             self.portfolio_performance.at[date_index, AUM] = self.calc_aum(date_index)
 
             # rebalance and store new portfolio

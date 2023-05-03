@@ -10,6 +10,7 @@ import yfinance as yf
 # Constants
 DATE_FORMAT = "%Y%m%d"
 YF_DATE_FORMAT = "%Y-%m-%d"
+YF_ADJUSTED_CLOSE = "Adj Close"
 
 
 class StocksFetcher:
@@ -23,28 +24,29 @@ class StocksFetcher:
         """
 
     def fetch_stocks_data(
-        self, tickers: List[str], start_date: str, end_date: str
+        self, tickers: List[str], beginning_date: str, ending_date: str
     ) -> pd.DataFrame:
         """
         TODO: _summary_
 
         Args:
             tickers (List[str]): _description_
-            start_date (str): _description_
-            end_date (str): _description_
+            beginning_date (str): _description_
+            ending_date (str): _description_
 
         Returns:
             pd.DataFrame: _description_
         """
-        dt_start = datetime.strptime(start_date, DATE_FORMAT) - \
+        dt_start = datetime.strptime(beginning_date, DATE_FORMAT) - \
             timedelta(days=430)
-        dt_end = datetime.strptime(end_date, DATE_FORMAT)
+        dt_end = datetime.strptime(ending_date, DATE_FORMAT)
         data = yf.download(
             tickers, 
-            dt_start.strftime(YF_DATE_FORMAT), 
-            dt_end.strftime(YF_DATE_FORMAT))["Adj Close"]
-        if (len(tickers) == 1):
+            dt_start.strftime(YF_DATE_FORMAT),
+            dt_end.strftime(YF_DATE_FORMAT),
+            progress=False)[YF_ADJUSTED_CLOSE]
+        if len(tickers) == 1:
             res = data.to_frame()
-            res.rename(columns = {'Adj Close': tickers[0]}, inplace = True)
+            res.rename(columns = {YF_ADJUSTED_CLOSE: tickers[0]}, inplace = True)
             return res
         return data

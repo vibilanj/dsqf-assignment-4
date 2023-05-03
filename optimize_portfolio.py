@@ -30,9 +30,9 @@ if __name__ == "__main__":
     # Initialising and fetching stocks data
     fetcher = StocksFetcher()
     stocks_data = fetcher.fetch_stocks_data(
-        ticker_symbols=user_input.get_tickers(),
+        tickers=user_input.get_tickers(),
         beginning_date=user_input.get_beginning_date(),
-        ending_date=user_input.get_ending_date(),
+        ending_date=user_input.get_ending_date()
     )
 
     # Running the backtest simulation
@@ -40,28 +40,21 @@ if __name__ == "__main__":
         stocks_data=stocks_data,
         initial_aum=user_input.get_initial_aum(),
         beginning_date=user_input.get_beginning_date(),
-        strategy1=user_input.get_strategy1_type(),
-        strategy2=user_input.get_strategy2_type(),
-        days1=user_input.get_days1(),
-        days2=user_input.get_days2(),
-        top_pct=user_input.get_top_pct(),
+        optimizer=user_input.get_optimizer()
     )
     backtest.fill_up_portfolio_performance()
-    backtest.calc_ic()
 
     # Getting the backtest performance and IC information
     portfolio_perf = backtest.portfolio_performance
-    portfolio_ic = backtest.monthly_ic
-    model_stats = backtest.model_statistics_record
 
-    # Calculating backtest statistics
-    backtest_statistics = BacktestStats(
-        portfolio_performance=portfolio_perf,
-        monthly_ic=portfolio_ic,
-        model_statistics=model_stats,
-    )
+    # # Calculating backtest statistics
+    # backtest_statistics = BacktestStats(
+    #     portfolio_performance=portfolio_perf,
+    #     monthly_ic=portfolio_ic,
+    #     model_statistics=model_stats,
+    # )
 
-    # Printing statistics summary and geenrating plots
-    backtest_statistics.print_summary()
-    backtest_statistics.plot_daily_aum()
-    backtest_statistics.plot_monthly_cumulative_ic()
+    # # Printing statistics summary and geenrating plots
+    # backtest_statistics.print_summary()
+    # backtest_statistics.plot_daily_aum()
+    # backtest_statistics.plot_monthly_cumulative_ic()
