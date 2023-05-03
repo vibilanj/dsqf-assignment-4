@@ -46,11 +46,6 @@ S = risk_models.sample_cov(df)
 # weights = hrp.clean_weights()
 # hrp.portfolio_performance(verbose=True)
 
-# # Optimize using hrp, second method
-# hrp = HRPOpt(returns=df, cov_matrix=S)
-# weights = hrp.optimize()
-# hrp.portfolio_performance(verbose=True)
-
 # Testing
 # for stock, amount in clean_weights.items():
 #     if (amount != 0.0):

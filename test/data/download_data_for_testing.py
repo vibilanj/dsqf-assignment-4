@@ -1,6 +1,7 @@
 import sys
 from src.stocks_fetcher import StocksFetcher
-sys.path.append("/.../src")
+sys.path.append("../src")
+print(sys.path)
 
 tickers = ["MSFT", "WMT", "LMT", "SPY", "GM", "PG"]
 sf = StocksFetcher()
