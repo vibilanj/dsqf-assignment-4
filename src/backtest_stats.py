@@ -220,8 +220,8 @@ class BacktestStats:
                 ylabel="Weight"
             ).get_figure()
             fig.legend(loc="center right")
-            fig.subplots_adjust(right=0.83)
             fig.autofmt_xdate()
+            fig.subplots_adjust(right=0.83)
             fig.savefig(path)
             fig.clf()
         elif plot == "stacked_area":
@@ -234,8 +234,8 @@ class BacktestStats:
                 ylabel="Weight"
             ).get_figure()
             fig.legend(loc="center right")
-            fig.subplots_adjust(right=0.83)
             fig.autofmt_xdate()
+            fig.subplots_adjust(right=0.83)
             fig.savefig(path)
             fig.clf()
         elif plot == "pies":
