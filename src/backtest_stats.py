@@ -5,7 +5,7 @@ from collections import OrderedDict
 from math import sqrt
 from typing import List, Tuple
 
-import matplotlib.animation as animation
+from matplotlib import animation
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -199,7 +199,7 @@ class BacktestStats:
         if plot == "line":
             weights.index = pd.to_datetime(weights.index)
             fig = weights.plot.line(
-                title="Portfolio Weights",
+                title="Portfolio Weights over Time",
                 grid=True,
                 legend=False,
                 xlabel="Date",
@@ -213,7 +213,7 @@ class BacktestStats:
         elif plot == "stacked_bar":
             fig = weights.plot.bar(
                 stacked=True,
-                title="Portfolio Weights",
+                title="Portfolio Weights over Time",
                 grid=True,
                 legend=False,
                 xlabel="Date",
@@ -227,7 +227,7 @@ class BacktestStats:
         elif plot == "stacked_area":
             fig = weights.plot.area(
                 stacked=True,
-                title="Portfolio Weights",
+                title="Portfolio Weights over Time",
                 grid=True,
                 legend=False,
                 xlabel="Date",

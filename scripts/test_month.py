@@ -6,7 +6,7 @@ from pypfopt import risk_models
 from pypfopt import expected_returns
 
 
-file_path = "./test/data/run_backtest/data.csv"
+file_path = "./test/data/data.csv"
 data = pd.read_csv(file_path, parse_dates=["Date"], index_col="Date")
 data.index = data.index.map(pd.Timestamp)
 
