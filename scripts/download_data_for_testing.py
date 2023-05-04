@@ -8,5 +8,5 @@ data = sf.fetch_stocks_data(
     "20230115"
 )
 
-data.to_csv("./data.csv")
+data.to_csv("./stocks_data.csv")
 

@@ -14,3 +14,5 @@ file.close()
 # file = open('weights_record.obj', 'rb')
 # weights_rec = pickle.load(file)
 # file.close()
+
+
