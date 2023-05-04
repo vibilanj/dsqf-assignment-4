@@ -122,3 +122,9 @@ Screenshot of code coverage report of the project:
 ![screenshot-2023-04-16-22:42:09](https://user-images.githubusercontent.com/61618719/232320687-6ded09ee-e30b-4d49-a783-56b0762b579e.png)
 
 python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220101 --e 20230101 --initial_aum 10000 --optimizer msr
+
+python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220915 --e 20230115 --initial_aum 10000 --optimizer msr
+
+python -i optimize_portfolio.py --tickers AAPL,TGT,RTX,VOO,BA,JNJ --b 20210915 --e 20230115 --initial_aum 10000 --optimizer msr --plot_weights
+
+python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20210915 --e 20230115 --initial_aum 10000 --optimizer msr --plot_weights

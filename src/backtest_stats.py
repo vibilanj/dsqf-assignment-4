@@ -5,6 +5,7 @@ from math import sqrt
 from typing import List, Tuple
 from collections import OrderedDict
 import pandas as pd
+import matplotlib.dates as mdates
 
 # Constants
 DATETIME = "datetime"
@@ -173,7 +174,7 @@ class BacktestStats:
     """
         print(out_str)
 
-    def plot_portfolio_weights(self, path: str = "portfolio_weights") -> None:
+    def plot_portfolio_weights(self, path: str = "portfolio_weights", plot: str = "line") -> None:
         """TODO
         Plots the daily asset under management amount throughout
         the backtesting period.
@@ -186,15 +187,36 @@ class BacktestStats:
           None: Generates a plot of the daily AUM and saves it to a file.
         """
         weights = pd.DataFrame(self.weights_record[1], index=self.weights_record[0])
-        weights.index = pd.to_datetime(weights.index)
 
-        fig = weights.plot.line(
-            title="Portfolio Weights",
-            grid=True,
-            legend=True,
-            xlabel="Date",
-            ylabel="Weight",
-            marker="o"
-        ).get_figure()
-        fig.savefig(path)
-        fig.clf()
+        if plot == "line":
+            weights.index = pd.to_datetime(weights.index)
+            fig = weights.plot.line(
+                title="Portfolio Weights",
+                grid=True,
+                legend=False,
+                xlabel="Date",
+                ylabel="Weight",
+                marker="o"
+            ).get_figure()
+            fig.legend(loc='center right')
+            fig.subplots_adjust(right=0.83)
+            fig.savefig(path)
+            fig.clf()
+        elif plot == "stacked_bar":
+            fig = weights.plot.bar(
+                stacked=True,
+                title="Portfolio Weights",
+                grid=True,
+                legend=False,
+                xlabel="Date",
+                ylabel="Weight"
+            ).get_figure()
+            fig.legend(loc='center right')
+            fig.subplots_adjust(right=0.83)
+            fig.autofmt_xdate()
+            fig.savefig(path)
+            fig.clf()
+        elif plot == "pies":
+            pass
+
+
