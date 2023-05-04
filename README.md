@@ -73,3 +73,6 @@ python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220915 --
 python -i optimize_portfolio.py --tickers AAPL,TGT,RTX,VOO,BA,JNJ --b 20210915 --e 20230115 --initial_aum 10000 --optimizer msr --plot_weights
 
 python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20210915 --e 20230115 --initial_aum 10000 --optimizer msr --plot_weights
+
+
+python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220915 --e 20230115 --initial_aum 10000 --optimizer msr
