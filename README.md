@@ -58,6 +58,14 @@
          1. self.update_portfolio()
       4. cut portfolio performance to only start from from the first end of month
 
+## Testing steps
+1. run test/test_month.py based on the index required on google sheets (e.g. 309 for first rebalancing)
+2. take note of the weights printed and transfer them to google sheets
+3. To rebalance:
+   1. calculate the temporary aum from the previous day portfolio and today's stock price
+   2. using the temporary aum and the weights, calculate the new portfolio
+   3. copy the portfolio until a day before the next rebalancing day
+
 ## Setting up virtual environment (recommended)
 
 1. Run `python3 -m venv .venv`.
