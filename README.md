@@ -19,6 +19,7 @@
 ## Direction of use
 
 1. To install packages, run `pip install -r requirements.txt`.
+2. For testing, you might need to deactivate and activate the virtual environment again.
 
 ## Updating environment
 
