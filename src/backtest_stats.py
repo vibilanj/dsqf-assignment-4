@@ -1,11 +1,13 @@
 """
 This module is responsible for the backtest statistics.
 """
+from collections import OrderedDict
 from math import sqrt
 from typing import List, Tuple
-from collections import OrderedDict
+
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
 import pandas as pd
-import matplotlib.dates as mdates
 
 # Constants
 DATETIME = "datetime"
@@ -35,7 +37,8 @@ class BacktestStats:
             backtest simulation.
         """
         self.portfolio_performance: pd.DataFrame = portfolio_performance
-        self.weights_record: Tuple[List[str], List[OrderedDict[str, float]]] = weights_record
+        self.weights_record: \
+            Tuple[List[str], List[OrderedDict[str, float]]] = weights_record
 
         """
     beginning_trading_date (pd.Timestamp): The timestamp of the
@@ -174,7 +177,11 @@ class BacktestStats:
     """
         print(out_str)
 
-    def plot_portfolio_weights(self, path: str = "portfolio_weights", plot: str = "line") -> None:
+    def plot_portfolio_weights(
+            self,
+            path: str = "portfolio_weights",
+            plot: str = "line"
+        ) -> None:
         """TODO
         Plots the daily asset under management amount throughout
         the backtesting period.
@@ -186,7 +193,8 @@ class BacktestStats:
         Returns:
           None: Generates a plot of the daily AUM and saves it to a file.
         """
-        weights = pd.DataFrame(self.weights_record[1], index=self.weights_record[0])
+        weights = pd.DataFrame(self.weights_record[1],
+                               index=self.weights_record[0])
 
         if plot == "line":
             weights.index = pd.to_datetime(weights.index)
@@ -198,7 +206,7 @@ class BacktestStats:
                 ylabel="Weight",
                 marker="o"
             ).get_figure()
-            fig.legend(loc='center right')
+            fig.legend(loc="center right")
             fig.subplots_adjust(right=0.83)
             fig.savefig(path)
             fig.clf()
@@ -211,12 +219,38 @@ class BacktestStats:
                 xlabel="Date",
                 ylabel="Weight"
             ).get_figure()
-            fig.legend(loc='center right')
+            fig.legend(loc="center right")
+            fig.subplots_adjust(right=0.83)
+            fig.autofmt_xdate()
+            fig.savefig(path)
+            fig.clf()
+        elif plot == "stacked_area":
+            fig = weights.plot.area(
+                stacked=True,
+                title="Portfolio Weights",
+                grid=True,
+                legend=False,
+                xlabel="Date",
+                ylabel="Weight"
+            ).get_figure()
+            fig.legend(loc="center right")
             fig.subplots_adjust(right=0.83)
             fig.autofmt_xdate()
             fig.savefig(path)
             fig.clf()
         elif plot == "pies":
-            pass
-
-
+            fig, ax = plt.subplots()
+            def update(frame):
+                ax.clear()
+                ax.set_title(f"Portfolio Weights ({weights.index[frame]})")
+                ax.axis("equal")
+                ax.pie(weights.iloc[frame],
+                       labels=weights.columns,
+                       autopct="%1.1f%%")
+            ani = animation.FuncAnimation(fig,
+                                          update,
+                                          frames=len(weights),
+                                          interval=500,
+                                          repeat=True)
+            ani.save(f"{path}.gif", writer="imagemagick", fps=2)
+            plt.close()

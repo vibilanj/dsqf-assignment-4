@@ -57,6 +57,7 @@ if __name__ == "__main__":
     # Printing statistics summary and geenrating plots
     backtest_statistics.print_summary()
     if user_input.get_plot_weights():
-        # backtest_statistics.plot_portfolio_weights()
+        backtest_statistics.plot_portfolio_weights()
         # backtest_statistics.plot_portfolio_weights(plot="stacked_bar")
-        backtest_statistics.plot_portfolio_weights(plot="pies")
+        # backtest_statistics.plot_portfolio_weights(plot="stacked_area")
+        # backtest_statistics.plot_portfolio_weights(plot="pies")

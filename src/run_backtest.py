@@ -1,15 +1,13 @@
 """
 This module is responsible for running the backtest simulation.
 """
+from collections import OrderedDict
 from typing import Dict, List, Tuple
 
 import pandas as pd
-from collections import OrderedDict
-
+from pypfopt import expected_returns, risk_models
 from pypfopt.efficient_frontier import EfficientFrontier
 from pypfopt.hierarchical_portfolio import HRPOpt
-from pypfopt import risk_models
-from pypfopt import expected_returns
 
 # Constants
 DATE_FORMAT = "%Y%m%d"

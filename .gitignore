@@ -180,6 +180,7 @@ cython_debug/
 *.pdf
 *.jpg
 *.jpeg
+*.gif
 
 # mac specific
 .DS_Store
