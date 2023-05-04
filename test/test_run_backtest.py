@@ -13,11 +13,8 @@ from src.run_backtest import (
     MSR,
     MV,
     HRP,
-    RunBacktest,
-)
-
-from src.run_backtest import (
-    AUM
+    AUM,
+    RunBacktest
 )
 
 sys.path.append("/.../src")
