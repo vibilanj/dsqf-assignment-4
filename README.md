@@ -25,7 +25,7 @@ To optimize a portfolio and plot the portfolio weights based on the stock univer
 
 ### Note
 
-The plot filenames can be specified but default to `portfolio_weights`. The plot type can also be specified (`line`, `stacked_bar`, `stacked_area` or `pies` ) but default to `line`.
+The plot filenames can be specified but defaults to `portfolio_weights`. The plot type can also be specified (`line`, `stacked_bar`, `stacked_area` or `pies`) but defaults to `line`.
 
 ## Unit Tests
 
