@@ -18,19 +18,20 @@
     - [x] `test_stocks_fetcher.py`
     - [x] `test_run_backtest.py`
     - [x] `test_backtest_stats.py`
-- [ ] Autoformat, Sort Imports and Linting
+- [x] Autoformat, Sort Imports and Linting
     - [x] `optimize_portfolio.py`
     - [x] `input_data.py`
     - [x] `stocks_fetcher.py`
     - [x] `run_backtest.py`
     - [x] `backtest_stats.py`
-    - [ ] `test_input_data.py`
-    - [ ] `test_stocks_fetcher.py`
-    - [ ] `test_run_backtest.py`
-    - [ ] `test_backtest_stats.py`
-- [ ] Decide what the default plot type is going to be
-- [ ] Delete scripts
+    - [x] `test_input_data.py`
+    - [x] `test_stocks_fetcher.py`
+    - [x] `test_run_backtest.py`
+    - [x] `test_backtest_stats.py`
+- [x] Decide what the default plot type is going to be
+- [x] Delete scripts
 - [ ] Update README images
+- [x] Add example of error in README
 - [ ] Test clean clone
 
 ## Setting up virtual environment
@@ -86,13 +87,10 @@ Screenshot of code coverage report of the project:
 
 ![screenshot-2023-04-16-22:42:09](https://user-images.githubusercontent.com/61618719/232320687-6ded09ee-e30b-4d49-a783-56b0762b579e.png)
 
-python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220101 --e 20230101 --initial_aum 10000 --optimizer msr
+## Issues
 
-python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220915 --e 20230115 --initial_aum 10000 --optimizer msr
+We noticed that for some inputs, there is the possibility that a `ValueError: at least one of the assets must have an expected return exceeding the risk-free rate` is raised. An example is with the following parameters:
 
-python -i optimize_portfolio.py --tickers AAPL,TGT,RTX,VOO,BA,JNJ --b 20210915 --e 20230115 --initial_aum 10000 --optimizer msr --plot_weights
+`python -i optimize_portfolio.py --tickers MSFT,WMT,GM --b 20220101 --e 20230101 --initial_aum 10000 --optimizer msr`
 
-python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20210915 --e 20230115 --initial_aum 10000 --optimizer msr --plot_weights
-
-
-python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220915 --e 20230115 --initial_aum 10000 --optimizer msr
+This issue is likely due to the small size of the stock universe and the relatively short time period. 
