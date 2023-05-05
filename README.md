@@ -5,7 +5,7 @@
 1. Run `python3 -m venv .venv`.
 2. Run `source .venv/bin/activate` to activate the virtual environment. This command needs to be run **before every session**.
 3. To install packages, run `pip install -r requirements.txt`.
-4. For testing, you might need to deactivate and activate the virtual environment again.
+4. For testing, you might need to deactivate and reactivate the virtual environment.
 
 ### Updating environment
 
@@ -17,11 +17,11 @@
 
 To optimize a portfolio based on the stock universe containing MSFT, WMT, LMT, SPY, GM, PG from September 15, 2022 to January 15, 2023 with an initial AUM of 10000 and using the Maximum Sharpe Ratio (MSR) optimizer, run the following:
 
-* `python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220915 --e 20230115 --initial_aum 10000 --optimizer msr`
+* `python optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220915 --e 20230115 --initial_aum 10000 --optimizer msr`
 
 To optimize a portfolio and plot the portfolio weights based on the stock universe containing MSFT, WMT, LMT, SPY, GM, PG from June 1, 2022 to today with an initial AUM of 10000 and using the Hierarchical Risk Parity (HRP) optimizer, run the following: 
 
-* `python -i optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220601 --initial_aum 10000 --optimizer hrp --plot_weights`
+* `python optimize_portfolio.py --tickers MSFT,WMT,LMT,SPY,GM,PG --b 20220601 --initial_aum 10000 --optimizer hrp --plot_weights`
 
 ### Note
 
@@ -37,6 +37,10 @@ To see the code coverage report, run the following command:
 
 1. `coverage run -m pytest`
 2. `coverage report`
+
+### Note
+
+There might be an issue with `pytest` or `coverage` unable to find certain modules. If it happens, try deactivating and reactivating the virtual environment.
 
 ## Project Accomplishments
 
@@ -57,6 +61,6 @@ Screenshot of code coverage report of the project:
 
 We noticed that for some inputs, there is the possibility that a `ValueError: at least one of the assets must have an expected return exceeding the risk-free rate` is raised. An example is with the following parameters:
 
-`python -i optimize_portfolio.py --tickers MSFT,WMT,GM --b 20220101 --e 20230101 --initial_aum 10000 --optimizer msr`
+`python optimize_portfolio.py --tickers MSFT,WMT,GM --b 20220101 --e 20230101 --initial_aum 10000 --optimizer msr`
 
 This error arises because the portfolio optimization algorithm requires that at least one asset in the portfolio has an expected return greater than the risk-free rate to justify taking on additional risk. If none of the assets in the portfolio have expected returns exceeding the risk-free rate, the optimization algorithm will be unable to identify a meaningful allocation that improves the risk-return tradeoff. To resolve this issue, the analysis period could be extended, risk-free rate can be adjusted from the default of 0.02, and other assets with potentially higher expected returns can be included in the portfolio
