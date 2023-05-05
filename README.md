@@ -81,11 +81,11 @@ To see the code coverage report, run the following command:
 
 Screenshot of pytest results of the project:
 
-![screenshot-2023-04-16-22:41:38](https://user-images.githubusercontent.com/61618719/232320678-3178ae53-d758-46fb-b245-ad3ee802e5f5.png)
+![screenshot-2023-05-05-15:41:56](https://user-images.githubusercontent.com/61618719/236402452-48e374e6-248a-4839-b617-a65858b0f3c2.png)
 
 Screenshot of code coverage report of the project:
 
-![screenshot-2023-04-16-22:42:09](https://user-images.githubusercontent.com/61618719/232320687-6ded09ee-e30b-4d49-a783-56b0762b579e.png)
+![screenshot-2023-05-05-15:42:17](https://user-images.githubusercontent.com/61618719/236402473-d2a03f93-0886-4431-b978-2f2d0a5f5b2d.png)
 
 ## Issues
 
@@ -93,4 +93,4 @@ We noticed that for some inputs, there is the possibility that a `ValueError: at
 
 `python -i optimize_portfolio.py --tickers MSFT,WMT,GM --b 20220101 --e 20230101 --initial_aum 10000 --optimizer msr`
 
-This issue is likely due to the small size of the stock universe and the relatively short time period. 
+This error arises because the portfolio optimization algorithm requires that at least one asset in the portfolio has an expected return greater than the risk-free rate to justify taking on additional risk. If none of the assets in the portfolio have expected returns exceeding the risk-free rate, the optimization algorithm will be unable to identify a meaningful allocation that improves the risk-return tradeoff. To resolve this issue, the analysis period could be extended, risk-free rate can be adjusted from the default of 0.02, and other assets with potentially higher expected returns can be included in the portfolio
