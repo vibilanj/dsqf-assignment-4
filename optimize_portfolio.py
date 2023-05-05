@@ -7,12 +7,11 @@ Members:
 - Vibilan Jayanth
 - Nahian Chowdhury Nileema
 
-TODO: Change description
 Fetches daily stock information of specified stock tickers within
-a given time frame and backtests a linear combination of two signals
-for a monthly strategy. Calculates various statistics based on the
-backtest simulation to provides an analysis of the strategy over the
-given time period.
+a given time frame and optimizes a monthly portfolio using the
+PyPortfolioOpt library. Calculates various statistics based on the
+portfolio backtesting simulation to provide an overview of the 
+performance of the portfolio over the given time period.
 """
 import sys
 
@@ -44,7 +43,7 @@ if __name__ == "__main__":
     )
     backtest.fill_up_portfolio_performance()
 
-    # Getting the backtest performance and IC information
+    # Getting the backtest performance and portfolio weights
     portfolio_perf = backtest.portfolio_performance
     weights_rec = backtest.weights_record
 
@@ -57,7 +56,4 @@ if __name__ == "__main__":
     # Printing statistics summary and geenrating plots
     backtest_statistics.print_summary()
     if user_input.get_plot_weights():
-        backtest_statistics.plot_portfolio_weights(path="portfolio_line", plot="line")
-        backtest_statistics.plot_portfolio_weights(path="portfolio_bar", plot="stacked_bar")
-        backtest_statistics.plot_portfolio_weights(path="portfolio_area", plot="stacked_area")
-        backtest_statistics.plot_portfolio_weights(path="portfolio_pie", plot="pies")
+        backtest_statistics.plot_portfolio_weights()

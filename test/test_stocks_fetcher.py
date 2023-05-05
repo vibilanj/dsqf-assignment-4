@@ -3,9 +3,8 @@ This module is responsible for testing the functions that fetch stock data.
 """
 import sys
 import unittest
-from datetime import datetime
 
-from src.stocks_fetcher import DATE_FORMAT, StocksFetcher
+from src.stocks_fetcher import StocksFetcher
 
 sys.path.append("/.../src")
 
@@ -15,7 +14,8 @@ class TestStocksFetcher(unittest.TestCase):
     Defines the TestStocksFetcher class which tests the StocksFetcher class.
     """
     def test_fetch_single_ticker(self):
-        """_summary_
+        """
+        Tests the fetch_stocks_data method with a single ticker.
         """
         start_str = "20230301"
         end_str = "20230302"
@@ -29,9 +29,10 @@ class TestStocksFetcher(unittest.TestCase):
             res.columns.to_list(),
             [ticker]
         )
-    
+
     def test_fetch_mult_tickers(self):
-        """_summary_
+        """
+        Tests the fetch_stocks_data method with multiple tickers.
         """
         start_str = "20230301"
         end_str = "20230302"
@@ -43,4 +44,4 @@ class TestStocksFetcher(unittest.TestCase):
         self.assertListEqual(
             res.columns.to_list(),
             tickers_str
-    )
+        )

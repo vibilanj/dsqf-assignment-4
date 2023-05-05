@@ -19,8 +19,7 @@ TRADING_DAYS_PER_YEAR = 250
 class BacktestStats:
     """
     Defines the BacktestStats class which calculates statistics based
-    on the backtest portfolio performance and monthly information
-    coefficients.
+    on the backtest portfolio performance and monthly portfolio weights.
     """
 
     def __init__(
@@ -28,26 +27,27 @@ class BacktestStats:
         portfolio_performance: pd.DataFrame,
         weights_record: Tuple[List[str], List[OrderedDict[str, float]]]
     ):
-        """TODO
+        """
         This method initialises the BacktestStats class.
 
         Args:
-          portfolio_performance (pd.Dataframe): The dataframe containing
-            the portfolio performance information calculated during the
-            backtest simulation.
+            portfolio_performance (pd.Dataframe): The dataframe containing
+                the portfolio performance information calculated during the
+                backtest simulation.
+            weights_record (Tuple[List[str], List[OrderedDict[str, float]]]):
+                The tuple containing the portfolio weight information
+                calculated during the backtest simulation.
         """
         self.portfolio_performance: pd.DataFrame = portfolio_performance
         self.weights_record: \
             Tuple[List[str], List[OrderedDict[str, float]]] = weights_record
 
         """
-    beginning_trading_date (pd.Timestamp): The timestamp of the
-      beginning trading day.
-    ending_trading_date (pd.Timestamp): The timestamp of the
-      ending trading day.
-    latest_model_statistics (List[float]): The model statistics
-      of the latest linear regression model.
-    """
+        beginning_trading_date (pd.Timestamp): The timestamp of the
+            beginning trading day.
+        ending_trading_date (pd.Timestamp): The timestamp of the
+            ending trading day.
+        """
         self.beginning_trading_date: pd.Timestamp = \
           self.portfolio_performance[DATETIME][0]
         self.ending_trading_date: pd.Timestamp = \
@@ -56,7 +56,7 @@ class BacktestStats:
     def get_number_of_days(self) -> int:
         """
         int: Returns the number of calendar days from the beginning date
-          to the ending date.
+            to the ending date.
         """
         return (self.ending_trading_date -\
                 self.beginning_trading_date).round("1d").days
@@ -75,15 +75,13 @@ class BacktestStats:
 
     def get_profit_loss(self) -> float:
         """
-        float: Returns the profit or loss of the backtest strategy
-          including dividends.
+        float: Returns the profit or loss during the backtest.
         """
         return self.get_final_aum() - self.get_initial_aum()
 
     def get_total_stock_return(self) -> float:
         """
-        float: Returns the total stock return of the backtest strategy
-          (without dividends).
+        float: Returns the total stock return of the backtest strategy.
         """
         return (self.get_final_aum() - self.get_initial_aum()) / \
             self.get_initial_aum()
@@ -91,9 +89,9 @@ class BacktestStats:
     def get_annualized_rate_of_return(self) -> float:
         """
         float: Returns the annualized rate of return of the
-          backtest strategy calculated based on the formula
-          from the following source:
-          https://www.investopedia.com/terms/a/annualized-rate.asp
+            backtest strategy calculated based on the formula
+            from the following source:
+            https://www.investopedia.com/terms/a/annualized-rate.asp
         """
         return (
             (self.get_initial_aum() + self.get_profit_loss()) / \
@@ -122,7 +120,7 @@ class BacktestStats:
     def get_daily_standard_deviation(self) -> float:
         """
         float: Returns the standard deviation of the daily returns
-          of the portfolio.
+            of the portfolio.
         """
         daily_returns = self.get_daily_returns()
         average_daily_return = self.get_average_daily_return()
@@ -139,32 +137,39 @@ class BacktestStats:
         return sqrt(average_squared_daily_deviations)
 
     def get_annualized_volatility(self) -> float:
-        """ TODO
-        https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
+        """ 
+        float: Returns the annualized standard deviation or the
+            annualized volatility of the daily returns of the 
+            portfolio (assuming 250 trading days in a year) calculated
+            based on the information from the following source: 
+            https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
         """
         return self.get_daily_standard_deviation() * sqrt(TRADING_DAYS_PER_YEAR)
 
     def get_daily_sharpe_ratio(self) -> float:
         """
         float: Returns the sharpe ratio of the portfolio (assuming
-          a daily risk-free rate of 0.01%) calculated based on the
-          formula from the following source:
-          https://www.realvantage.co/insights/what-is-sharpe-ratio/
+            a daily risk-free rate of 0.01%) calculated based on the
+            formula from the following source:
+            https://www.realvantage.co/insights/what-is-sharpe-ratio/
         """
         return (
             self.get_average_daily_return() - 0.0001
         ) / self.get_daily_standard_deviation()
 
     def get_annualized_sharpe_ratio(self) -> float:
-        """ TODO
-        https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
+        """
+        float: Returns the annualized sharpe ratio of the portfolio
+            (assuming 250 trading days in a year) calculated based on
+            the information from the following source: 
+            https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
         """
         return self.get_daily_sharpe_ratio() * sqrt(TRADING_DAYS_PER_YEAR)
 
     def print_summary(self) -> None:
         """
         None: Prints the formatted summary of the calculated portfolio
-          statistics.
+            statistics.
         """
         out_str = f"""
     Backtest Stats
@@ -182,16 +187,20 @@ class BacktestStats:
             path: str = "portfolio_weights",
             plot: str = "line"
         ) -> None:
-        """TODO
-        Plots the daily asset under management amount throughout
+        """
+        Plots the portfolio weights at each rebalance date throughout
         the backtesting period.
 
         Args:
-          path (str): Specifies the path where the plot is saved.
-          Defaults to "daily_aum".
+            path (str): Specifies the path where the plot is saved.
+                Defaults to "portfolio_weights".
+            plot (str): Specifies the type of plot to product. Allowed
+                plot types are "line", "stacked_bar", "stacked_area" and
+                "pies". Defaults to "line".
 
         Returns:
-          None: Generates a plot of the daily AUM and saves it to a file.
+            None: Generates a plot of the portfolio weights and saves it to
+                a file.
         """
         weights = pd.DataFrame(self.weights_record[1],
                                index=self.weights_record[0])

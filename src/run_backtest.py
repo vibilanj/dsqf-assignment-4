@@ -31,32 +31,38 @@ class RunBacktest:
         self,
         stocks_data: pd.DataFrame,
         initial_aum: int,
-        beginning_date: int,
+        beginning_date: str,
         optimizer: str
     ):
         """
-        TODO This method initialises the RunBacktest class.
+        This method initialises the RunBacktest class.
 
         Args:
-          stocks_data (Dict[str, pd.DataFrame]): The dictionary that matches
-            the stock ticker to the price information of the stock.
-          initial_aum (int): The initial asset under management amount.
-          beginning_date (str): The beginning date of the backtest period.
+            stocks_data (pd.DataFrame): The dataframe containing the adjusted
+              close price for all stocks throughout the time frame.
+            initial_aum (int): The initial asset under management amount.
+            beginning_date (str): The beginning date of the backtest period.
+            optimizer (str): The optimizer to use for asset allocation.
         """
         self.stocks_data: Dict[str, pd.DataFrame] = stocks_data
         self.initial_aum: int = initial_aum
         self.beginning_date: str = beginning_date
         self.optimizer: str = optimizer
 
-        """ TODO
+        """
         portfolio_performance (pd.DataFrame): The dataframe to store the
-        portfolio performance information such as AUM and dividends.
-        portfolio (List[Tuple[str, float]]): The list containing the
-        current portfolio. Each element is a tuple of the stock ticker
-        and the amount of the stock.
-        portfolio_record (List[List[Tuple[str, float]]]): The list containing
-        a record of previous portfolios. Each element is a portfolio.
-        month_end_indexes (List[int]): The list of indexes of the month
+            portfolio performance information (AUM).
+        portfolio (OrderedDict[str, float]): The ordered dictionary
+            containing the current portfolio. Each ticker is matched to the 
+            amount of stock held.
+        portfolio_record (List[OrderedDict[str, float]]): The list containing
+            a record of previous portfolios. Each element is a portfolio.
+        weights_record (Tuple[List[str], List[OrderedDict[str, float]]]): 
+            A tuple containing a list of portfolio rebalance dates and a list
+            of ordered dictionaries containing the portfolio weights. Each
+            ticker is matched to the weight held in the portfolio.
+        month_end_indexes (List[int]): The list of month end indexes in the 
+            time frame
         """
         self.portfolio_performance: pd.DataFrame = \
             self.init_portfolio_performance()
@@ -68,8 +74,8 @@ class RunBacktest:
     def init_portfolio_performance(self) -> None:
         """
         None: Initialises the portfolio performance dataframe with
-          the datetime indexes in the specified period and the initial
-          AUM.
+            the datetime indexes in the specified period and the initial
+            AUM.
         """
         datetime_indexes = self.stocks_data.index.to_list()
         portfolio_performance = pd.DataFrame()
@@ -82,7 +88,7 @@ class RunBacktest:
     def get_month_end_indexes_from_b(self) -> List[int]:
         """
         List[int]: Returns the indexes of the month end dates starting
-          from the beginning date.
+            from the beginning date.
         """
         datetime_indexes = self.stocks_data.index.to_list()
         b_timestamp = pd.to_datetime(self.beginning_date, format=DATE_FORMAT)
@@ -100,24 +106,28 @@ class RunBacktest:
         Calculates the assets under management amount for a given date index.
 
         Args:
-          date_index (int): The index of the date at which AUM must be
-            calculated
+            date_index (int): The index of the date at which AUM must be
+                calculated
 
         Returns:
-          float: Returns the AUM amount.
+            float: Returns the AUM amount.
         """
         total_aum = 0
         for stock, amount in self.portfolio.items():
-            if (amount != 0.0):
+            if amount != 0.0:
                 end_close = self.stocks_data[stock].iloc[date_index]
                 total_aum += amount * end_close
         return total_aum
-    
+
     def update_portfolio(self, date_index: int) -> None:
-        """TODO
+        """
+        Updates the portfolio at a given date index. Creates an optimizer
+        object based on the optimizer and calculated the portfolio weights.
+        Updates the weights record, portfolio and the portfolio record.
 
         Args:
-            date_index (int): _description_
+            date_index (int): The index of the date at which the 
+                portfolio is calculated and updated.
         """
         df = self.stocks_data[date_index - 249 : date_index + 1]
         sample_covariance = risk_models.sample_cov(df)
@@ -147,14 +157,16 @@ class RunBacktest:
         self.portfolio_record.append(self.portfolio)
 
     def fill_up_portfolio_performance(self) -> None:
-        """TODO
-        None: Simulates backtesting based on the user-defined strategies and
-          fills up the dataframe of portfolio performance with the calculated
-          AUM for each day in the specified time period.
         """
-        for date_index in range(self.month_end_indexes[0], len(self.stocks_data.index)):
+        None: Simulates backtesting based on the user-defined optimizer and
+            fills up the dataframe of portfolio performance with the calculated
+            AUM for each day in the specified time period.
+        """
+        for date_index in range(self.month_end_indexes[0],
+                                len(self.stocks_data.index)):
             if date_index != self.month_end_indexes[0]:
-                self.portfolio_performance.at[date_index, AUM] = self.calc_aum(date_index)
+                self.portfolio_performance.at[date_index, AUM] =\
+                    self.calc_aum(date_index)
 
             # rebalance and store new portfolio
             if date_index in self.month_end_indexes:

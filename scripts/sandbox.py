@@ -40,7 +40,7 @@ S = risk_models.sample_cov(df)
 # clean_weights = ef.clean_weights()
 # ef.portfolio_performance(verbose=True)
 
-# # Optimize for heirarchical risk parity
+# # Optimize for Hierarchical risk parity
 # hrp = HRPOpt(df, S)
 # hrp.optimize()
 # weights = hrp.clean_weights()

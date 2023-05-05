@@ -29,7 +29,7 @@ ef_mv = EfficientFrontier(mu, S)
 weights_mv = ef_mv.min_volatility()
 clean_weights_mv = ef_mv.clean_weights()
 
-# Optimize for heirarchical risk parity
+# Optimize for Hierarchical risk parity
 hrp = HRPOpt(df, S)
 hrp.optimize()
 clean_weights_hrp = hrp.clean_weights()

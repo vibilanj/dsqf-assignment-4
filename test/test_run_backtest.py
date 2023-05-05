@@ -2,20 +2,13 @@
 This module is responsible for testing the functions that simulate
 the backtest
 """
+import pickle
 import sys
 import unittest
-import pickle
 
 import pandas as pd
 
-from src.run_backtest import (
-    DATE_FORMAT,
-    MSR,
-    MV,
-    HRP,
-    AUM,
-    RunBacktest
-)
+from src.run_backtest import AUM, DATE_FORMAT, HRP, MSR, MV, RunBacktest
 
 sys.path.append("/.../src")
 
@@ -43,7 +36,9 @@ class TestRunBacktest(unittest.TestCase):
     data_path = "./test/data/"
     stocks_path = data_path + "stocks_data.csv"
 
-    stocks_data = pd.read_csv(stocks_path, parse_dates=["Date"], index_col="Date")
+    stocks_data = pd.read_csv(stocks_path,
+                              parse_dates=["Date"],
+                              index_col="Date")
     stocks_data.index = stocks_data.index.map(pd.Timestamp)
 
     def init_run_backtest(self, optimizer: str):
@@ -70,39 +65,45 @@ class TestRunBacktest(unittest.TestCase):
         self.assertListEqual(month_end_dates, expected)
 
     def helper_portfolio_performance(self, optimizer: str):
-        """TODO
+        """
+        Auxiliary function that tests the fill_up_portfolio_performance method
+        for a given optimizer.
         """
         rbt = self.init_run_backtest(optimizer)
         rbt.fill_up_portfolio_performance()
-        # test weights 
+
+        # test weights
         file_wr = open(self.data_path + optimizer + "_weights_record.obj", "rb")
         weights_record = pickle.load(file_wr)
         file_wr.close()
         self.assertEqual(weights_record, rbt.weights_record)
+
         # test portfolio performance
-        portfolio_perf = pd.read_csv(self.data_path + optimizer + "_portfolio_performance.csv")
+        portfolio_perf = pd.read_csv(
+            self.data_path + optimizer + "_portfolio_performance.csv")
         res = rbt.portfolio_performance[AUM]
         expected = portfolio_perf[AUM]
         for i in range(len(res)):
-            self.assertAlmostEqual(res.iloc[i], expected.iloc[i]) 
+            self.assertAlmostEqual(res.iloc[i], expected.iloc[i])
 
     def test_fill_up_portfolio_performance_msr(self):
-        """TODO
-        Tests the fill_up_portfolio_performance method.
+        """
+        Tests the fill_up_portfolio_performance method with the Maximum
+        Sharpe Ratio (MSR) optimizer.
         """
         self.helper_portfolio_performance(MSR)
-    
+
     def test_fill_up_portfolio_performance_mv(self):
-        """TODO
-        Tests the fill_up_portfolio_performance method.
+        """
+        Tests the fill_up_portfolio_performance method with the Minimum
+        Variance (MV) optimizer.
         """
         self.helper_portfolio_performance(MV)
 
     def test_fill_up_portfolio_performance_hrp(self):
-        """TODO
-        Tests the fill_up_portfolio_performance method.
+        """
+        Tests the fill_up_portfolio_performance method with the Hierarchical
+        Risk Parity (HRP) optimizer.
         """
         self.helper_portfolio_performance(HRP)
-    
-    
 

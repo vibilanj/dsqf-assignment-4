@@ -188,8 +188,8 @@ class TestInputData(unittest.TestCase):
 
     def test_beginning_date_greater_than_today(self):
         """
-        Tests the get_beginning_date method with a beginning
-        date greater than today
+        Tests the get_beginning_date method with a beginning date
+        greater than today.
         """
         with self.assertRaises(ValueError):
             input_data = InputData(**{**self.default_args,
