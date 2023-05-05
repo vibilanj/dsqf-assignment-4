@@ -46,10 +46,7 @@ class TestRunBacktest(unittest.TestCase):
         Tests the RunBacktest class instantiation.
         """
         return RunBacktest(
-            self.stocks_data,
-            self.initial_aum,
-            self.start_str,
-            optimizer
+            self.stocks_data, self.initial_aum, self.start_str, optimizer
         )
 
     def test_get_month_end_indexes_from_b(self):
@@ -58,9 +55,11 @@ class TestRunBacktest(unittest.TestCase):
         """
         rbt = self.init_run_backtest(MSR)
         self.assertEqual(len(rbt.month_end_indexes), 4)
-        month_end_dates = self.stocks_data\
-            .index[rbt.month_end_indexes]\
-            .map(lambda s: s.strftime(DATE_FORMAT)).to_list()
+        month_end_dates = (
+            self.stocks_data.index[rbt.month_end_indexes]
+            .map(lambda s: s.strftime(DATE_FORMAT))
+            .to_list()
+        )
         expected = ["20220930", "20221031", "20221130", "20221230"]
         self.assertListEqual(month_end_dates, expected)
 
@@ -80,7 +79,8 @@ class TestRunBacktest(unittest.TestCase):
 
         # test portfolio performance
         portfolio_perf = pd.read_csv(
-            self.data_path + optimizer + "_portfolio_performance.csv")
+            self.data_path + optimizer + "_portfolio_performance.csv"
+        )
         res = rbt.portfolio_performance[AUM]
         expected = portfolio_perf[AUM]
         for i in range(len(res)):
@@ -106,4 +106,3 @@ class TestRunBacktest(unittest.TestCase):
         Risk Parity (HRP) optimizer.
         """
         self.helper_portfolio_performance(HRP)
-

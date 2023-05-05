@@ -5,9 +5,9 @@ from collections import OrderedDict
 from math import sqrt
 from typing import List, Tuple
 
-from matplotlib import animation
 import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib import animation
 
 # Constants
 DATETIME = "datetime"
@@ -25,7 +25,7 @@ class BacktestStats:
     def __init__(
         self,
         portfolio_performance: pd.DataFrame,
-        weights_record: Tuple[List[str], List[OrderedDict[str, float]]]
+        weights_record: Tuple[List[str], List[OrderedDict[str, float]]],
     ):
         """
         This method initialises the BacktestStats class.
@@ -39,8 +39,9 @@ class BacktestStats:
                 calculated during the backtest simulation.
         """
         self.portfolio_performance: pd.DataFrame = portfolio_performance
-        self.weights_record: \
-            Tuple[List[str], List[OrderedDict[str, float]]] = weights_record
+        self.weights_record: Tuple[
+            List[str], List[OrderedDict[str, float]]
+        ] = weights_record
 
         """
         beginning_trading_date (pd.Timestamp): The timestamp of the
@@ -48,18 +49,20 @@ class BacktestStats:
         ending_trading_date (pd.Timestamp): The timestamp of the
             ending trading day.
         """
-        self.beginning_trading_date: pd.Timestamp = \
-          self.portfolio_performance[DATETIME][0]
-        self.ending_trading_date: pd.Timestamp = \
-          list(self.portfolio_performance[DATETIME])[-1]
+        self.beginning_trading_date: pd.Timestamp = self.portfolio_performance[
+            DATETIME
+        ][0]
+        self.ending_trading_date: pd.Timestamp = list(
+            self.portfolio_performance[DATETIME]
+        )[-1]
 
     def get_number_of_days(self) -> int:
         """
         int: Returns the number of calendar days from the beginning date
             to the ending date.
         """
-        return (self.ending_trading_date -\
-                self.beginning_trading_date).round("1d").days
+        return (self.ending_trading_date - self.beginning_trading_date)\
+            .round("1d").days
 
     def get_initial_aum(self) -> float:
         """
@@ -96,7 +99,7 @@ class BacktestStats:
         return (
             (self.get_initial_aum() + self.get_profit_loss()) / \
                 self.get_initial_aum()
-        ) ** (365 / self.get_number_of_days()) - 1
+                ) ** (365 / self.get_number_of_days()) - 1
 
     def get_daily_returns(self) -> List[float]:
         """
@@ -125,8 +128,8 @@ class BacktestStats:
         daily_returns = self.get_daily_returns()
         average_daily_return = self.get_average_daily_return()
         daily_deviations = [
-            daily_return - average_daily_return for daily_return \
-                in daily_returns
+            daily_return - average_daily_return \
+                for daily_return in daily_returns
         ]
         squared_daily_deviations = [
             daily_deviation**2 for daily_deviation in daily_deviations
@@ -137,12 +140,12 @@ class BacktestStats:
         return sqrt(average_squared_daily_deviations)
 
     def get_annualized_volatility(self) -> float:
-        """ 
+        """
         float: Returns the annualized standard deviation or the
-            annualized volatility of the daily returns of the 
+            annualized volatility of the daily returns of the
             portfolio (assuming 250 trading days in a year) calculated
-            based on the information from the following source: 
-            https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
+            based on the information from the following source:
+            https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/
         """
         return self.get_daily_standard_deviation() * sqrt(TRADING_DAYS_PER_YEAR)
 
@@ -161,8 +164,8 @@ class BacktestStats:
         """
         float: Returns the annualized sharpe ratio of the portfolio
             (assuming 250 trading days in a year) calculated based on
-            the information from the following source: 
-            https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/ 
+            the information from the following source:
+            https://am.jpmorgan.com/hk/en/asset-management/adv/tools-resources/investment-glossary/
         """
         return self.get_daily_sharpe_ratio() * sqrt(TRADING_DAYS_PER_YEAR)
 
@@ -183,10 +186,8 @@ class BacktestStats:
         print(out_str)
 
     def plot_portfolio_weights(
-            self,
-            path: str = "portfolio_weights",
-            plot: str = "line"
-        ) -> None:
+        self, path: str = "portfolio_weights", plot: str = "line"
+    ) -> None:
         """
         Plots the portfolio weights at each rebalance date throughout
         the backtesting period.
@@ -213,7 +214,7 @@ class BacktestStats:
                 legend=False,
                 xlabel="Date",
                 ylabel="Weight",
-                marker="o"
+                marker="o",
             ).get_figure()
             fig.legend(loc="center right")
             fig.subplots_adjust(right=0.83)
@@ -226,7 +227,7 @@ class BacktestStats:
                 grid=True,
                 legend=False,
                 xlabel="Date",
-                ylabel="Weight"
+                ylabel="Weight",
             ).get_figure()
             fig.legend(loc="center right")
             fig.autofmt_xdate()
@@ -240,7 +241,7 @@ class BacktestStats:
                 grid=True,
                 legend=False,
                 xlabel="Date",
-                ylabel="Weight"
+                ylabel="Weight",
             ).get_figure()
             fig.legend(loc="center right")
             fig.autofmt_xdate()
@@ -249,6 +250,7 @@ class BacktestStats:
             fig.clf()
         elif plot == "pies":
             fig, ax = plt.subplots()
+
             def update(frame):
                 ax.clear()
                 ax.set_title(f"Portfolio Weights ({weights.index[frame]})")
@@ -256,10 +258,9 @@ class BacktestStats:
                 ax.pie(weights.iloc[frame],
                        labels=weights.columns,
                        autopct="%1.1f%%")
-            ani = animation.FuncAnimation(fig,
-                                          update,
-                                          frames=len(weights),
-                                          interval=500,
-                                          repeat=True)
+
+            ani = animation.FuncAnimation(
+                fig, update, frames=len(weights), interval=500, repeat=True
+            )
             ani.save(f"{path}.gif", writer="imagemagick", fps=2)
             plt.close()

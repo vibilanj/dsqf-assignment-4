@@ -13,6 +13,7 @@ class TestStocksFetcher(unittest.TestCase):
     """
     Defines the TestStocksFetcher class which tests the StocksFetcher class.
     """
+
     def test_fetch_single_ticker(self):
         """
         Tests the fetch_stocks_data method with a single ticker.
@@ -25,10 +26,7 @@ class TestStocksFetcher(unittest.TestCase):
         res = sf.fetch_stocks_data(tickers_str, start_str, end_str)
         self.assertFalse(res.empty)
         self.assertTrue(len(res.index) > 250)
-        self.assertListEqual(
-            res.columns.to_list(),
-            [ticker]
-        )
+        self.assertListEqual(res.columns.to_list(), [ticker])
 
     def test_fetch_mult_tickers(self):
         """
@@ -41,7 +39,4 @@ class TestStocksFetcher(unittest.TestCase):
         res = sf.fetch_stocks_data(tickers_str, start_str, end_str)
         self.assertFalse(res.empty)
         self.assertTrue(len(res.index) > 250)
-        self.assertListEqual(
-            res.columns.to_list(),
-            tickers_str
-        )
+        self.assertListEqual(res.columns.to_list(), tickers_str)

@@ -32,7 +32,7 @@ class TestInputData(unittest.TestCase):
                 "10000",
                 "--optimizer",
                 "msr",
-                "--plot_weights"
+                "--plot_weights",
             ]
         )
         self.assertEqual(args.tickers,
@@ -86,7 +86,7 @@ class TestInputData(unittest.TestCase):
                 "--initial_aum",
                 "10000",
                 "--optimizer",
-                "msr"
+                "msr",
             ]
         )
         self.assertIsNone(args.e)
@@ -102,7 +102,7 @@ class TestInputData(unittest.TestCase):
             "e": 20221231,
             "initial_aum": 10000,
             "optimizer": "msr",
-            "plot_weights": "True"
+            "plot_weights": "True",
         }
 
     def test_get_tickers_valid(self):
@@ -192,8 +192,7 @@ class TestInputData(unittest.TestCase):
         greater than today.
         """
         with self.assertRaises(ValueError):
-            input_data = InputData(**{**self.default_args,
-                                      "b": 99990101})
+            input_data = InputData(**{**self.default_args, "b": 99990101})
             input_data.get_beginning_date()
 
     def test_optimizers_valid(self):
@@ -201,20 +200,31 @@ class TestInputData(unittest.TestCase):
         Tests the get_optimizer method with valid input.
         """
         # valid options are msr mv and hrp
-        for valid_optimizers in ["msr", "mv", "hrp", "MSR", "MV", "HRP",
-                                 "MsR", "Mv", "HrP"]:
-            input_data = InputData(**{**self.default_args,
-                                      "optimizer": valid_optimizers})
+        for valid_optimizers in [
+            "msr",
+            "mv",
+            "hrp",
+            "MSR",
+            "MV",
+            "HRP",
+            "MsR",
+            "Mv",
+            "HrP",
+        ]:
+            input_data = InputData(
+                **{**self.default_args, "optimizer": valid_optimizers}
+            )
             self.assertEqual(input_data.get_optimizer(), valid_optimizers)
 
     def test_optimizers_invalid(self):
         """
         Tests the get_optimizer method with invalid input.
         """
-        for invalid_optimizers in ["msr,ms", 173129129,"ahdahaj", "#@", None]:
+        for invalid_optimizers in ["msr,ms", 173129129, "ahdahaj", "#@", None]:
             with self.assertRaises(ValueError):
-                input_data = InputData(**{**self.default_args,
-                                          "optimizer": invalid_optimizers})
+                input_data = InputData(
+                    **{**self.default_args, "optimizer": invalid_optimizers}
+                )
                 input_data.get_optimizer()
 
     def test_plot_weights_valid(self):
@@ -234,5 +244,6 @@ class TestInputData(unittest.TestCase):
             with self.assertRaises(ValueError):
                 input_data = InputData(
                     **{**self.default_args,
-                       "plot_weights": invalid_plot_weights})
+                       "plot_weights": invalid_plot_weights}
+                )
                 input_data.get_plot_weights()

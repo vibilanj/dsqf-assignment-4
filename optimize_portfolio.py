@@ -31,7 +31,7 @@ if __name__ == "__main__":
     stocks_data = fetcher.fetch_stocks_data(
         tickers=user_input.get_tickers(),
         beginning_date=user_input.get_beginning_date(),
-        ending_date=user_input.get_ending_date()
+        ending_date=user_input.get_ending_date(),
     )
 
     # Running the backtest simulation
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         stocks_data=stocks_data,
         initial_aum=user_input.get_initial_aum(),
         beginning_date=user_input.get_beginning_date(),
-        optimizer=user_input.get_optimizer()
+        optimizer=user_input.get_optimizer(),
     )
     backtest.fill_up_portfolio_performance()
 
@@ -49,8 +49,7 @@ if __name__ == "__main__":
 
     # Calculating backtest statistics
     backtest_statistics = BacktestStats(
-        portfolio_performance=portfolio_perf,
-        weights_record = weights_rec
+        portfolio_performance=portfolio_perf, weights_record=weights_rec
     )
 
     # Printing statistics summary and geenrating plots

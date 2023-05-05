@@ -57,7 +57,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--plot_weights",
         help="To plot the weights of the portfolio",
-        action="store_true"
+        action="store_true",
     )
 
     return parser
@@ -139,12 +139,14 @@ class InputData:
         tickers = [ticker.strip() for ticker in self.tickers.split(",")]
         for ticker in tickers:
             if not ticker.isalnum():
-                raise ValueError(\
-                    "Ticker must be a string of alphanumeric characters.")
-            if len(ticker) > MAX_TICKER_LENGTH \
-                or len(ticker) < MIN_TICKER_LENGTH:
-                raise \
-                    ValueError("Ticker must be between 1 to 5 characters long.")
+                raise ValueError(
+                    "Ticker must contain only alphanumeric characters."
+                    )
+            if len(ticker) > MAX_TICKER_LENGTH or \
+                len(ticker) < MIN_TICKER_LENGTH:
+                raise ValueError(
+                    "Ticker must be between 1 to 5 characters long."
+                    )
         return tickers
 
     def get_beginning_date(self) -> str:
@@ -208,7 +210,7 @@ class InputData:
                 integer or is not a positive integer.
 
         Returns:
-            int: Returns the initial asset under management if it has been 
+            int: Returns the initial asset under management if it has been
                 validated.
         """
         if self.initial_aum is None:
@@ -235,9 +237,7 @@ class InputData:
         if not isinstance(self.optimizer, str):
             raise ValueError("Optimizer must be a string.")
         if self.optimizer.lower() not in OPTIMIZERS:
-            raise ValueError(
-                "Optimizer must be one of the following: msr, mv, hrp"
-            )
+            raise ValueError("Optimizer must be either msr, mv, or hrp")
         return self.optimizer
 
     def get_plot_weights(self) -> bool:

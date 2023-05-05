@@ -19,11 +19,11 @@
     - [x] `test_run_backtest.py`
     - [x] `test_backtest_stats.py`
 - [ ] Autoformat, Sort Imports and Linting
-    - [ ] `optimize_portfolio.py`
-    - [ ] `input_data.py`
-    - [ ] `stocks_fetcher.py`
-    - [ ] `run_backtest.py`
-    - [ ] `backtest_stats.py`
+    - [x] `optimize_portfolio.py`
+    - [x] `input_data.py`
+    - [x] `stocks_fetcher.py`
+    - [x] `run_backtest.py`
+    - [x] `backtest_stats.py`
     - [ ] `test_input_data.py`
     - [ ] `test_stocks_fetcher.py`
     - [ ] `test_run_backtest.py`

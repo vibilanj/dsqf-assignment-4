@@ -32,7 +32,7 @@ class RunBacktest:
         stocks_data: pd.DataFrame,
         initial_aum: int,
         beginning_date: str,
-        optimizer: str
+        optimizer: str,
     ):
         """
         This method initialises the RunBacktest class.
@@ -68,7 +68,8 @@ class RunBacktest:
             self.init_portfolio_performance()
         self.portfolio: OrderedDict[str, float] = OrderedDict()
         self.portfolio_record: List[OrderedDict[str, float]] = []
-        self.weights_record: Tuple[List[str], List[OrderedDict[str, float]]] = ([], [])
+        self.weights_record: Tuple[List[str], List[OrderedDict[str, float]]] =\
+            ([], [])
         self.month_end_indexes: List[int] = self.get_month_end_indexes_from_b()
 
     def init_portfolio_performance(self) -> None:
@@ -95,8 +96,10 @@ class RunBacktest:
         month_end_indexes = []
 
         for idx, datetime in enumerate(datetime_indexes[:-1]):
-            if datetime.month != datetime_indexes[idx + 1].month \
-                and datetime_indexes[idx].tz_localize(None) > b_timestamp:
+            if (
+                datetime.month != datetime_indexes[idx + 1].month
+                and datetime_indexes[idx].tz_localize(None) > b_timestamp
+            ):
                 month_end_indexes.append(idx)
 
         return month_end_indexes
@@ -126,7 +129,7 @@ class RunBacktest:
         Updates the weights record, portfolio and the portfolio record.
 
         Args:
-            date_index (int): The index of the date at which the 
+            date_index (int): The index of the date at which the
                 portfolio is calculated and updated.
         """
         df = self.stocks_data[date_index - 249 : date_index + 1]
@@ -151,7 +154,8 @@ class RunBacktest:
         portfolio = weights.copy()
         aum = self.portfolio_performance.at[date_index, AUM]
         for stock, weight in portfolio.items():
-            portfolio[stock] = weight * aum / self.stocks_data[stock].iloc[date_index]
+            stock_price = self.stocks_data[stock].iloc[date_index]
+            portfolio[stock] = weight * aum / stock_price
 
         self.portfolio = portfolio
         self.portfolio_record.append(self.portfolio)
@@ -165,8 +169,9 @@ class RunBacktest:
         for date_index in range(self.month_end_indexes[0],
                                 len(self.stocks_data.index)):
             if date_index != self.month_end_indexes[0]:
-                self.portfolio_performance.at[date_index, AUM] =\
-                    self.calc_aum(date_index)
+                self.portfolio_performance.at[date_index, AUM] = self.calc_aum(
+                    date_index
+                )
 
             # rebalance and store new portfolio
             if date_index in self.month_end_indexes:
@@ -182,6 +187,4 @@ class RunBacktest:
                 b_idx = idx
                 break
         self.portfolio_performance = \
-            self.portfolio_performance[b_idx:].reset_index(
-            drop=True
-        )
+            self.portfolio_performance[b_idx:].reset_index(drop=True)

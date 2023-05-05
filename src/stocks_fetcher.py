@@ -24,14 +24,11 @@ class StocksFetcher:
         """
 
     def fetch_stocks_data(
-        self,
-        tickers: List[str],
-        beginning_date: str,
-        ending_date: str
+        self, tickers: List[str], beginning_date: str, ending_date: str
     ) -> pd.DataFrame:
         """
         Fetches the adjusted closing prices for multiple tickers from Yahoo
-        Finance with an additional 430 days from the given beginning date 
+        Finance with an additional 430 days from the given beginning date
         to the given ending date.
 
         Args:
@@ -41,22 +38,22 @@ class StocksFetcher:
             ending_date (str): The ending date given by the user.
 
         Returns:
-            pd.DataFrame: Returns a dataframe containing the adjusted 
-                close price for each stock in the universe at each 
+            pd.DataFrame: Returns a dataframe containing the adjusted
+                close price for each stock in the universe at each
                 trading date in the time frame.
         """
-        dt_start = datetime.strptime(beginning_date, DATE_FORMAT) - \
-            timedelta(days=430)
-        dt_end = datetime.strptime(ending_date, DATE_FORMAT) + \
-            timedelta(days=1)
+        dt_start = \
+            datetime.strptime(beginning_date, DATE_FORMAT) - timedelta(days=430)
+        dt_end = \
+            datetime.strptime(ending_date, DATE_FORMAT) + timedelta(days=1)
         data = yf.download(
             tickers,
             dt_start.strftime(YF_DATE_FORMAT),
             dt_end.strftime(YF_DATE_FORMAT),
-            progress=False)[YF_ADJUSTED_CLOSE]
+            progress=False,
+        )[YF_ADJUSTED_CLOSE]
         if len(tickers) == 1:
             res = data.to_frame()
-            res.rename(columns = {YF_ADJUSTED_CLOSE: tickers[0]},
-                       inplace = True)
+            res.rename(columns={YF_ADJUSTED_CLOSE: tickers[0]}, inplace=True)
             return res
         return data
