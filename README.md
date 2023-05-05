@@ -1,39 +1,5 @@
 # Assignment 4 - Alan, Vibilan, Jerri, Nahian
 
-## TODO
-- [x] Fix linting spaces, install autoformatter
-- [x] Cleanup old requirements
-- [x] Change InputData to handle new arguments
-- [x] Change RunBacktest to use PyPortfolioOpt
-- [x] Filter BacktestStats to produces new statistics
-- [x] Update requirements
-- [x] Testing
-- [x] Documentation
-    - [x] `optimize_portfolio.py`
-    - [x] `input_data.py`
-    - [x] `stocks_fetcher.py`
-    - [x] `run_backtest.py`
-    - [x] `backtest_stats.py`
-    - [x] `test_input_data.py`
-    - [x] `test_stocks_fetcher.py`
-    - [x] `test_run_backtest.py`
-    - [x] `test_backtest_stats.py`
-- [x] Autoformat, Sort Imports and Linting
-    - [x] `optimize_portfolio.py`
-    - [x] `input_data.py`
-    - [x] `stocks_fetcher.py`
-    - [x] `run_backtest.py`
-    - [x] `backtest_stats.py`
-    - [x] `test_input_data.py`
-    - [x] `test_stocks_fetcher.py`
-    - [x] `test_run_backtest.py`
-    - [x] `test_backtest_stats.py`
-- [x] Decide what the default plot type is going to be
-- [x] Delete scripts
-- [ ] Update README images
-- [x] Add example of error in README
-- [ ] Test clean clone
-
 ## Setting up virtual environment
 
 1. Run `python3 -m venv .venv`.
